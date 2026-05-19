@@ -1,0 +1,1395 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <title>Jonah &amp; John Paul — Forever Begins · June 6, 2026</title>
+  <meta name="description" content="Join us as Jonah and John Paul celebrate their wedding — June 6, 2026, Cebu City, Philippines.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400;1,600&family=Cinzel+Decorative:wght@400;700&family=Raleway:wght@300;400;500;600;700;800&family=Dancing+Script:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="stylesheet" href="assets/css/index.css">
+  <style>
+    /* ══════════════════════════════════════════
+       INVITATION OVERLAY
+       ══════════════════════════════════════════ */
+    #invite-overlay {
+      position:fixed;inset:0;z-index:9000;
+      background:linear-gradient(150deg,#0a1f38 0%,#122944 50%,#1a3a5e 100%);
+      display:flex;align-items:center;justify-content:center;
+      overflow:hidden;
+      transition:opacity .85s ease,visibility .85s ease;
+    }
+    #invite-overlay.hidden { opacity:0;visibility:hidden;pointer-events:none; }
+
+    #inv-stars{position:absolute;inset:0;pointer-events:none;z-index:0;overflow:hidden;}
+    .inv-star{position:absolute;border-radius:50%;background:white;opacity:0;animation:starTwinkle ease-in-out infinite;}
+    @keyframes starTwinkle{0%,100%{opacity:0;transform:scale(.5);}50%{opacity:.75;transform:scale(1);}}
+
+    #inv-blobs{position:absolute;inset:0;pointer-events:none;z-index:0;overflow:hidden;}
+    .inv-blob{position:absolute;border-radius:50%;filter:blur(90px);opacity:.14;animation:blobDrift 18s ease-in-out infinite;}
+    .inv-blob:nth-child(1){width:700px;height:700px;top:-150px;left:-200px;background:#4a9fd4;animation-delay:0s;}
+    .inv-blob:nth-child(2){width:600px;height:600px;bottom:-100px;right:-150px;background:#1d5fa3;animation-delay:-6s;}
+    .inv-blob:nth-child(3){width:500px;height:500px;top:40%;left:55%;background:#7ec0e0;animation-delay:-12s;}
+    .inv-blob:nth-child(4){width:300px;height:300px;top:20%;right:10%;background:#c8a040;animation-delay:-3s;opacity:.06;}
+    @keyframes blobDrift{0%,100%{transform:scale(1) translate(0,0);}33%{transform:scale(1.08) translate(20px,-20px);}66%{transform:scale(.95) translate(-15px,15px);}}
+
+    #inv-petals{position:absolute;inset:0;pointer-events:none;z-index:1;overflow:hidden;}
+    .inv-petal{position:absolute;top:-60px;opacity:0;animation:petalFall linear infinite;}
+    @keyframes petalFall{0%{opacity:0;transform:translateY(0) rotate(0deg);}8%{opacity:.7;}90%{opacity:.2;}100%{opacity:0;transform:translateY(110vh) rotate(560deg) translateX(50px);}}
+
+    #inv-specks{position:absolute;inset:0;pointer-events:none;z-index:1;}
+    .inv-speck{position:absolute;border-radius:50%;background:#c8a040;animation:speckRise linear infinite;opacity:0;}
+    @keyframes speckRise{0%{opacity:0;transform:translateY(0) scale(0);}15%{opacity:.9;transform:translateY(-15px) scale(1);}85%{opacity:.4;transform:translateY(-90px) scale(.7);}100%{opacity:0;transform:translateY(-120px) scale(0);}}
+
+    #inv-notes{position:absolute;inset:0;pointer-events:none;z-index:2;}
+    .inv-mnote{position:absolute;opacity:0;color:#e6cc78;animation:noteRise linear forwards;}
+    @keyframes noteRise{0%{opacity:0;transform:translateY(0) scale(.5) rotate(-10deg);}20%{opacity:.9;transform:translateY(-30px) scale(1) rotate(5deg);}80%{opacity:.4;transform:translateY(-120px) scale(.8) rotate(-5deg);}100%{opacity:0;transform:translateY(-180px) scale(.3);}}
+
+    #inv-music-pill{
+      position:absolute;top:24px;right:24px;z-index:200;
+      display:flex;align-items:center;gap:10px;padding:9px 16px;
+      border-radius:999px;background:rgba(10,31,56,.75);
+      border:1px solid rgba(200,160,64,.28);backdrop-filter:blur(12px);
+      color:#e6cc78;font-family:'Raleway',sans-serif;
+      font-size:.6rem;font-weight:600;letter-spacing:2.5px;text-transform:uppercase;
+      opacity:0;pointer-events:none;transition:opacity .7s ease;
+    }
+    #inv-music-pill.show{opacity:1;pointer-events:auto;}
+    .inv-bars{display:flex;align-items:flex-end;gap:2px;height:14px;}
+    .inv-bars span{width:2.5px;background:#e6cc78;border-radius:2px;animation:musicBar .65s ease-in-out infinite;}
+    .inv-bars span:nth-child(1){height:6px;animation-delay:0s;}
+    .inv-bars span:nth-child(2){height:12px;animation-delay:.1s;}
+    .inv-bars span:nth-child(3){height:8px;animation-delay:.2s;}
+    .inv-bars span:nth-child(4){height:13px;animation-delay:.05s;}
+    @keyframes musicBar{0%,100%{transform:scaleY(1);}50%{transform:scaleY(.25);}}
+
+    .inv-scene{position:relative;z-index:10;display:flex;flex-direction:column;align-items:center;perspective:1400px;}
+    .inv-header{text-align:center;margin-bottom:28px;opacity:0;animation:fadeSlideDown .9s .3s ease forwards;}
+    @keyframes fadeSlideDown{from{opacity:0;transform:translateY(-24px);}to{opacity:1;transform:translateY(0);}}
+    .inv-header .eyebrow{font-size:.58rem;letter-spacing:8px;text-transform:uppercase;color:#e6cc78;font-weight:500;margin-bottom:10px;display:block;}
+    .inv-header h1{font-family:'Dancing Script',cursive;font-size:clamp(1.9rem,5vw,3.2rem);color:#b4d8ee;line-height:1.1;}
+    .inv-header h1 span{color:#e6cc78;}
+
+    .inv-env{position:relative;width:clamp(290px,55vw,520px);cursor:pointer;filter:drop-shadow(0 30px 60px rgba(0,0,0,.5));transition:filter .4s;opacity:0;animation:envEntrance 1.1s .7s cubic-bezier(.34,1.56,.64,1) forwards;}
+    .inv-env:hover{filter:drop-shadow(0 40px 80px rgba(45,120,192,.55));}
+    @keyframes envEntrance{from{opacity:0;transform:translateY(70px) scale(.86);}to{opacity:1;transform:translateY(0) scale(1);}}
+    .inv-env.idle{animation:envEntrance 1.1s .7s cubic-bezier(.34,1.56,.64,1) forwards,envFloat 4s 2s ease-in-out infinite;}
+    @keyframes envFloat{0%,100%{transform:translateY(0) rotate(-.4deg);}50%{transform:translateY(-12px) rotate(.4deg);}}
+
+    .inv-shimmer{position:absolute;inset:0;border-radius:8px;background:linear-gradient(105deg,transparent 40%,rgba(255,255,255,.15) 50%,transparent 60%);background-size:200% 100%;background-position:-100% 0;pointer-events:none;z-index:2;animation:shimmerSweep 3.5s 2.5s ease-in-out infinite;}
+    @keyframes shimmerSweep{0%{background-position:-100% 0;}50%{background-position:200% 0;}100%{background-position:-100% 0;}}
+    .inv-env-light{position:absolute;left:50%;top:0;width:200%;height:120%;transform:translateX(-50%);background:radial-gradient(ellipse 40% 30% at 50% 5%,rgba(200,160,64,.2) 0%,transparent 70%);opacity:0;pointer-events:none;transition:opacity 1.4s ease;z-index:3;}
+    .inv-env-light.glow{opacity:1;}
+
+    .env-body{fill:#f6fafd;}.env-back-flap{fill:#daeef8;}.env-side-left{fill:#cce5f5;}.env-side-right{fill:#c2dff0;}.env-bottom{fill:#d0e9f6;}
+    .env-flap{fill:#edf6fb;transform-origin:50% 0%;transform-box:fill-box;transition:transform 1.3s cubic-bezier(.4,0,.2,1),filter 1.3s ease;filter:drop-shadow(0 4px 20px rgba(10,31,56,.2));}
+    .env-flap.open{transform:rotateX(-180deg);filter:drop-shadow(0 -10px 36px rgba(45,120,192,.3));}
+    .seal-group{transform-origin:260px 185px;transform-box:fill-box;transition:opacity .5s,transform .6s cubic-bezier(.34,1.56,.64,1);}
+    .seal-group.hide{opacity:0;transform:scale(.5);pointer-events:none;}
+    .seal-circle{fill:#122944;stroke:#c8a040;stroke-width:2.5;}.seal-ring{fill:none;stroke:#e6cc78;stroke-width:1;opacity:.6;}
+    .seal-mono{font-family:'Dancing Script',cursive;fill:#c8a040;font-size:17px;}
+    .seal-pulse{fill:none;stroke:#c8a040;stroke-width:2;opacity:0;animation:sealPulse 2.5s 2s ease-in-out infinite;transform-origin:260px 185px;}
+    @keyframes sealPulse{0%{opacity:.6;r:28px;}100%{opacity:0;r:52px;}}
+    .stamp-group{transition:opacity .5s;}.stamp-group.hide{opacity:0;}
+
+    .inv-letter{position:absolute;left:50%;bottom:12%;transform:translateX(-50%) translateY(0);width:84%;z-index:5;transition:transform 1.4s cubic-bezier(.25,.46,.45,.94),opacity 1.4s ease;pointer-events:none;opacity:0;}
+    .inv-letter.rise{transform:translateX(-50%) translateY(-84%);opacity:1;}
+    .inv-letter-card{background:white;border-radius:6px;padding:28px 24px 22px;text-align:center;border:1px solid rgba(45,120,192,.12);box-shadow:0 2px 12px rgba(10,31,56,.1);position:relative;overflow:hidden;}
+    .inv-letter-card::before{content:'';position:absolute;top:0;right:0;width:120px;height:110px;background:radial-gradient(ellipse 70px 50px at 90% 10%,rgba(126,192,224,.4) 0%,transparent 70%);pointer-events:none;}
+    .lf{width:100%;margin-bottom:8px;overflow:visible;}
+    .le{font-size:.52rem;letter-spacing:5px;text-transform:uppercase;color:#2d78c0;font-weight:600;margin-bottom:6px;display:block;}
+    .ln{font-family:'Dancing Script',cursive;font-size:clamp(1.5rem,4vw,2.2rem);color:#0a1f38;line-height:1;margin-bottom:6px;}
+    .la{color:#1d5fa3;}
+    .lt{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:.9rem;color:#1a3a5e;margin-bottom:12px;}
+    .ld{width:60px;height:1px;background:linear-gradient(90deg,transparent,#c8a040,transparent);margin:10px auto;}
+    .ldate{font-size:.62rem;letter-spacing:3px;text-transform:uppercase;color:#1d5fa3;font-weight:700;margin-bottom:2px;}
+    .lvenue{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:.8rem;color:#1a3a5e;}
+
+    .inv-cta{margin-top:32px;text-align:center;opacity:0;transition:opacity .8s ease;}
+    .inv-cta.show{opacity:1;}
+    .open-btn{display:inline-flex;align-items:center;gap:10px;padding:15px 42px;background:linear-gradient(150deg,#0a1f38,#122944,#1a3a5e);border:1px solid rgba(180,216,238,.22);border-radius:999px;color:#b4d8ee;font-family:'Raleway',sans-serif;font-size:.68rem;font-weight:700;letter-spacing:4px;text-transform:uppercase;cursor:pointer;transition:all .35s;box-shadow:0 8px 32px rgba(10,31,56,.4);}
+    .open-btn:hover{color:white;transform:translateY(-3px);box-shadow:0 14px 50px rgba(10,31,56,.6);}
+    .open-btn .bi{font-size:1rem;color:#e6cc78;}
+    .hint{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:.84rem;color:rgba(180,216,238,.55);margin-bottom:14px;display:block;}
+
+    .inv-enter{position:absolute;bottom:44px;left:50%;transform:translateX(-50%);z-index:200;opacity:0;pointer-events:none;transition:opacity .9s ease;text-align:center;}
+    .inv-enter.show{opacity:1;pointer-events:all;}
+    .enter-btn{display:inline-flex;align-items:center;gap:14px;padding:20px 60px;background:linear-gradient(135deg,#c8a040,#e6cc78,#c8a040);border:none;border-radius:999px;color:#0a1f38;font-family:'Cinzel Decorative',cursive;font-size:.74rem;letter-spacing:3px;cursor:pointer;box-shadow:0 8px 40px rgba(200,160,64,.5);transition:transform .35s cubic-bezier(.34,1.56,.64,1),box-shadow .35s;animation:goldPulse 2.5s ease-in-out infinite;}
+    .enter-btn:hover{transform:scale(1.05) translateY(-4px);box-shadow:0 20px 60px rgba(200,160,64,.65);}
+    @keyframes goldPulse{0%,100%{box-shadow:0 8px 40px rgba(200,160,64,.5);}50%{box-shadow:0 8px 60px rgba(200,160,64,.75);}}
+    .enter-sub{display:block;margin-top:10px;font-size:.58rem;letter-spacing:4px;text-transform:uppercase;color:rgba(180,216,238,.35);}
+
+    @keyframes ripple{from{transform:scale(0);opacity:.7;}to{transform:scale(4.5);opacity:0;}}
+    .ripple-c{position:absolute;border-radius:50%;background:rgba(200,160,64,.35);width:80px;height:80px;pointer-events:none;animation:ripple .8s ease-out forwards;}
+    .conf-p{position:absolute;pointer-events:none;opacity:0;}
+    @keyframes confFly{0%{opacity:1;transform:translate(0,0) rotate(0deg) scale(1);}100%{opacity:0;transform:var(--ep) rotate(var(--rot)) scale(.3);}}
+
+    /* Image placeholders */
+    .g-item{position:relative;}
+    .g-item .img-ph{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;background:linear-gradient(135deg,#0a1f38,#1a3a5e,#2d78c0);}
+    .g-item .img-ph-names{font-family:'Dancing Script',cursive;font-size:clamp(1.1rem,2.5vw,1.7rem);color:rgba(180,216,238,.45);text-align:center;line-height:1.2;}
+    .g-item .img-ph-label{font-family:'Raleway',sans-serif;font-size:.52rem;letter-spacing:3px;text-transform:uppercase;color:rgba(200,160,64,.4);}
+    .g-item .img-ph-icon{font-size:1.4rem;color:rgba(45,120,192,.35);}
+    .g-item .img-ph::after{content:'';position:absolute;inset:0;background:linear-gradient(105deg,transparent 40%,rgba(255,255,255,.04) 50%,transparent 60%);background-size:200% 100%;animation:phShimmer 3s ease-in-out infinite;}
+    @keyframes phShimmer{0%{background-position:-100% 0;}100%{background-position:300% 0;}}
+    .gallery-grid .g-item{min-height:180px;overflow:hidden;}
+    .gallery-grid .g-item img{width:100%;height:100%;object-fit:cover;display:block;}
+
+    @media(max-width:600px){
+      .inv-env{width:96vw;}
+      .inv-header h1{font-size:1.65rem;}
+      .inv-header{margin-bottom:16px;}
+      .enter-btn{padding:14px 32px;font-size:.62rem;gap:8px;}
+      .inv-enter{bottom:28px;}
+      .inv-cta{margin-top:20px;}
+      .open-btn{padding:12px 30px;font-size:.62rem;}
+      .hint{font-size:.78rem;}
+      .inv-letter-card{padding:20px 16px 16px;}
+      .ln{font-size:clamp(1.3rem,5vw,2rem);}
+      .inv-music-pill{top:12px;right:12px;padding:7px 12px;font-size:.55rem;}
+    }
+    @media(max-width:380px){
+      .inv-header h1{font-size:1.45rem;}
+      .inv-env{width:98vw;}
+      .enter-btn{padding:12px 24px;font-size:.58rem;}
+    }
+  </style>
+</head>
+<body>
+
+<!-- Single audio — lives for the entire session, never reloaded -->
+<audio id="bgMusic" src="assets/audio/background.mp3" loop preload="auto"></audio>
+
+<!-- ══════════════════════════════════════════════
+     INVITATION OVERLAY
+     ══════════════════════════════════════════════ -->
+<div id="invite-overlay">
+  <div id="inv-stars"></div>
+  <div id="inv-blobs"><div class="inv-blob"></div><div class="inv-blob"></div><div class="inv-blob"></div><div class="inv-blob"></div></div>
+  <div id="inv-petals"></div>
+  <div id="inv-specks"></div>
+  <div id="inv-notes"></div>
+
+  <div id="inv-music-pill">
+    <div class="inv-bars"><span></span><span></span><span></span><span></span></div>
+    <span>Playing Our Song</span>
+  </div>
+
+  <div class="inv-scene">
+    <div class="inv-header">
+      <span class="eyebrow">You are cordially invited</span>
+      <h1>A Wedding Invitation<br><span>Jonah &amp; John Paul</span></h1>
+    </div>
+
+    <div class="inv-env" id="envWrapper">
+      <div class="inv-shimmer"></div>
+      <div class="inv-env-light" id="envLight"></div>
+
+      <div class="inv-letter" id="letterWrap">
+        <div class="inv-letter-card">
+          <svg class="lf" viewBox="0 0 340 60" xmlns="http://www.w3.org/2000/svg" fill="none">
+            <ellipse cx="170" cy="20" rx="130" ry="24" fill="#4a9fd4" opacity=".08"/>
+            <circle cx="55" cy="28" r="18" fill="#2d78c0" opacity=".55"/><circle cx="55" cy="28" r="12" fill="#4a9fd4" opacity=".45"/><circle cx="55" cy="28" r="5" fill="#c8a040" opacity=".85"/>
+            <ellipse cx="40" cy="16" rx="8" ry="14" fill="#1d5fa3" opacity=".5" transform="rotate(-30 40 16)"/><ellipse cx="70" cy="16" rx="8" ry="14" fill="#2d78c0" opacity=".45" transform="rotate(30 70 16)"/>
+            <ellipse cx="72" cy="38" rx="8" ry="14" fill="#1d5fa3" opacity=".45" transform="rotate(140 72 38)"/><ellipse cx="38" cy="38" rx="8" ry="14" fill="#2d78c0" opacity=".5" transform="rotate(-140 38 38)"/>
+            <circle cx="285" cy="28" r="18" fill="#2d78c0" opacity=".55"/><circle cx="285" cy="28" r="12" fill="#4a9fd4" opacity=".45"/><circle cx="285" cy="28" r="5" fill="#c8a040" opacity=".85"/>
+            <ellipse cx="270" cy="16" rx="8" ry="14" fill="#1d5fa3" opacity=".5" transform="rotate(-30 270 16)"/><ellipse cx="300" cy="16" rx="8" ry="14" fill="#2d78c0" opacity=".45" transform="rotate(30 300 16)"/>
+          </svg>
+          <span class="le">Together with their families</span>
+          <div class="ln">Jonah <span class="la">&amp;</span> John Paul</div>
+          <div class="lt">invite you to celebrate their wedding</div>
+          <div class="ld"></div>
+          <div class="ldate">Saturday · June 6, 2026</div>
+          <div class="lvenue">Cebu City, Philippines</div>
+        </div>
+      </div>
+
+      <svg width="100%" viewBox="0 0 520 320" xmlns="http://www.w3.org/2000/svg" style="display:block;overflow:visible">
+        <g opacity=".92">
+          <ellipse cx="30" cy="20" rx="90" ry="55" fill="#4a9fd4" opacity=".12"/>
+          <circle cx="52" cy="38" r="26" fill="#1d5fa3" opacity=".75"/><circle cx="52" cy="38" r="18" fill="#2d78c0" opacity=".65"/><circle cx="52" cy="38" r="7" fill="#c8a040" opacity=".9"/>
+          <ellipse cx="34" cy="18" rx="10" ry="18" fill="#1a3a5e" opacity=".6" transform="rotate(-35 34 18)"/><ellipse cx="70" cy="18" rx="10" ry="18" fill="#1a3a5e" opacity=".6" transform="rotate(35 70 18)"/>
+          <circle cx="20" cy="12" r="2.5" fill="#c8a040" opacity=".85"/><circle cx="8" cy="28" r="1.8" fill="#c8a040" opacity=".7"/>
+        </g>
+        <g opacity=".92">
+          <ellipse cx="490" cy="20" rx="90" ry="55" fill="#4a9fd4" opacity=".12"/>
+          <circle cx="468" cy="38" r="26" fill="#1d5fa3" opacity=".75"/><circle cx="468" cy="38" r="18" fill="#2d78c0" opacity=".65"/><circle cx="468" cy="38" r="7" fill="#c8a040" opacity=".9"/>
+          <ellipse cx="486" cy="18" rx="10" ry="18" fill="#1a3a5e" opacity=".6" transform="rotate(35 486 18)"/><ellipse cx="450" cy="18" rx="10" ry="18" fill="#1a3a5e" opacity=".6" transform="rotate(-35 450 18)"/>
+          <circle cx="500" cy="12" r="2.5" fill="#c8a040" opacity=".85"/><circle cx="512" cy="28" r="1.8" fill="#c8a040" opacity=".7"/>
+        </g>
+        <rect class="env-back-flap" x="10" y="10" width="500" height="300" rx="8"/>
+        <polygon class="env-side-left" points="10,10 260,170 10,310"/>
+        <polygon class="env-side-right" points="510,10 260,170 510,310"/>
+        <polygon class="env-bottom" points="10,310 260,200 510,310"/>
+        <rect class="env-body" x="10" y="10" width="500" height="300" rx="8" opacity=".55"/>
+        <line x1="10" y1="10" x2="260" y2="165" stroke="rgba(45,120,192,.15)" stroke-width="1"/>
+        <line x1="510" y1="10" x2="260" y2="165" stroke="rgba(45,120,192,.15)" stroke-width="1"/>
+        <line x1="10" y1="310" x2="260" y2="200" stroke="rgba(45,120,192,.15)" stroke-width="1"/>
+        <line x1="510" y1="310" x2="260" y2="200" stroke="rgba(45,120,192,.15)" stroke-width="1"/>
+        <polygon class="env-flap" id="envFlap" points="10,10 510,10 260,175"/>
+        <g class="seal-group" id="sealGroup">
+          <circle cx="260" cy="185" r="38" fill="none" stroke="rgba(200,160,64,.1)" stroke-width="12"/>
+          <circle class="seal-circle" cx="260" cy="185" r="28"/><circle class="seal-ring" cx="260" cy="185" r="23"/>
+          <text x="260" y="178" text-anchor="middle" font-family="Dancing Script,cursive" font-size="8" fill="rgba(200,160,64,.5)">✦ ✦ ✦</text>
+          <text class="seal-mono" x="260" y="195" text-anchor="middle">J&amp;JP</text>
+          <circle class="seal-pulse" cx="260" cy="185" r="28"/>
+        </g>
+        <g class="stamp-group" id="stampGroup">
+          <rect x="440" y="20" width="58" height="68" rx="3" fill="white" opacity=".88" stroke="rgba(45,120,192,.2)" stroke-width="1" stroke-dasharray="3,2"/>
+          <path d="M469 41 Q469 36 474 36 Q479 36 479 41 Q479 46 469 52 Q459 46 459 41 Q459 36 464 36 Q469 36 469 41Z" fill="#4a9fd4" opacity=".6"/>
+          <text x="469" y="76" text-anchor="middle" font-family="Cinzel Decorative,cursive" font-size="5.5" fill="#1d5fa3" opacity=".7">J&amp;JP</text>
+        </g>
+        <g id="clickHint" style="transition:opacity .4s">
+          <text x="260" y="268" text-anchor="middle" font-family="Raleway,sans-serif" font-size="9" font-weight="600" fill="rgba(45,120,192,.55)" letter-spacing="3">CLICK TO OPEN</text>
+          <text x="260" y="285" text-anchor="middle" font-size="8" fill="rgba(45,120,192,.35)">▲</text>
+        </g>
+        <rect x="10" y="10" width="500" height="300" rx="8" fill="none" stroke="rgba(45,120,192,.15)" stroke-width="1.5"/>
+      </svg>
+    </div>
+
+    <div class="inv-cta" id="ctaWrap">
+      <span class="hint">Tap the envelope to reveal your invitation ♡</span>
+      <button class="open-btn" id="openBtn" onclick="openEnvelope()">
+        <span class="bi">✉</span>Open Invitation
+      </button>
+    </div>
+  </div>
+
+  <div class="inv-enter" id="enterWrap">
+    <button class="enter-btn" onclick="enterSite()"><span>✦</span>Enter Our Wedding<span>✦</span></button>
+    <span class="enter-sub">#JonahAndJohnPaulForever</span>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     MAIN WEDDING SITE (hidden until enterSite)
+     ══════════════════════════════════════════════ -->
+<div id="main-site" style="visibility:hidden">
+
+<div id="scroll-bar"></div>
+<div id="loader"><div class="ld-wrap"><div class="ld-monogram"><div class="ld-monogram-inner">J&amp;JP</div></div><div class="ld-name">Jonah &amp; John Paul</div><div class="ld-sub">June 6, 2026 &nbsp;·&nbsp; Cebu City</div><div class="ld-bar"><div class="ld-fill" id="loaderProgress"></div></div><div class="ld-dots"><span></span><span></span><span></span></div></div></div>
+<div id="petals"></div>
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorFollower"></div>
+
+<div class="music-pill">
+  <button class="music-btn" id="musicToggle"><i class="fas fa-music" id="musicIcon"></i></button>
+  <span class="music-lbl">Our Song</span>
+</div>
+
+<nav id="navbar">
+  <div class="nav-logo">J <span class="nav-amp">&amp;</span><span class="nav-logo-sep"></span>JP</div>
+  <ul class="nav-links">
+    <li><a href="#story">Story</a></li><li><a href="#timeline">Journey</a></li><li><a href="#details">Details</a></li>
+    <li><a href="#sponsors">Sponsors</a></li><li><a href="#bridal">Bridal Party</a></li>
+    <li><a href="#gallery">Gallery</a></li><li><a href="#wishes">Wishes</a></li><li><a href="#rsvp">RSVP</a></li><li><a href="#gifts">Gifts &#9825;</a></li>
+    <li><a href="guest-upload.html" class="nav-cta"><i class="fas fa-camera"></i>&nbsp; Share Photos</a></li>
+  </ul>
+  <button class="hamburger" id="hamburger" aria-label="Menu"><span></span><span></span><span></span></button>
+</nav>
+<div class="mob-nav" id="mobileMenu"><ul>
+  <li><a href="#story" class="mobile-link">Story</a></li><li><a href="#timeline" class="mobile-link">Journey</a></li>
+  <li><a href="#details" class="mobile-link">Details</a></li><li><a href="#sponsors" class="mobile-link">Sponsors</a></li>
+  <li><a href="#bridal" class="mobile-link">Bridal Party</a></li><li><a href="#gallery" class="mobile-link">Gallery</a></li>
+  <li><a href="#wishes" class="mobile-link">Wishes</a></li><li><a href="#rsvp" class="mobile-link">RSVP</a></li><li><a href="#gifts" class="mobile-link">Gifts &#9825;</a></li>
+  <li><a href="guest-upload.html" class="mobile-link mob-cta">&#128247; Share Your Photos</a></li>
+</ul></div>
+
+<section class="hero" id="home">
+  <canvas id="heartCanvas"></canvas>
+
+  <!-- Dark cinematic vignette overlay like ref image -->
+  <div class="hero-vignette"></div>
+
+  <!-- 3D Card Carousel -->
+  <div class="hero-carousel" id="heroCarousel">
+    <button class="hc-arrow hc-prev" id="hcPrev" aria-label="Previous">&#8249;</button>
+    <button class="hc-arrow hc-next" id="hcNext" aria-label="Next">&#8250;</button>
+
+    <div class="hc-track" id="hcTrack">
+      <!-- Card 0 — How We Met -->
+      <div class="hc-card" data-idx="0">
+        <div class="hc-card-bg" style="background:linear-gradient(160deg,#0a1f38 0%,#1d5fa3 45%,#7ec0e0 100%)">
+          <div class="hc-card-texture"></div>
+          <img src="assets/images/story-9.png" alt="How We Met" class="hc-card-photo">
+        </div>
+        <div class="hc-card-overlay"></div>
+        <div class="hc-card-label"><span class="hc-label-sub">In 2015</span><span class="hc-label-main">How We Met</span></div>
+      </div>
+      <!-- Card 1 — Couple Since (CENTER default) -->
+      <div class="hc-card" data-idx="1">
+        <div class="hc-card-bg" style="background:linear-gradient(160deg,#122944 0%,#2d78c0 50%,#b4d8ee 100%)">
+          <div class="hc-card-texture"></div>
+          <img src="assets/images/story-1.png" alt="Couple since August 06, 2015" class="hc-card-photo">
+        </div>
+        <div class="hc-card-overlay"></div>
+        <div class="hc-card-label"><span class="hc-label-sub">August 06, 2015</span><span class="hc-label-main">Together &#9825;</span></div>
+      </div>
+      <!-- Card 2 — Scripture / Farm -->
+      <div class="hc-card" data-idx="2">
+        <div class="hc-card-bg" style="background:linear-gradient(160deg,#0a1f38 0%,#1a3a5e 40%,#4a9fd4 100%)">
+          <div class="hc-card-texture"></div>
+          <img src="assets/images/story-5.png" alt="Isaiah 60:22" class="hc-card-photo">
+        </div>
+        <div class="hc-card-overlay"></div>
+        <div class="hc-card-label"><span class="hc-label-sub">Isaiah 60:22</span><span class="hc-label-main">His Timing</span></div>
+      </div>
+      <!-- Card 3 — Engaged -->
+      <div class="hc-card" data-idx="3">
+        <div class="hc-card-bg" style="background:linear-gradient(160deg,#122944 0%,#1d5fa3 40%,#c8a040 100%)">
+          <div class="hc-card-texture"></div>
+          <img src="assets/images/story-2.png" alt="Got engaged, August 06, 2025" class="hc-card-photo">
+        </div>
+        <div class="hc-card-overlay"></div>
+        <div class="hc-card-label"><span class="hc-label-sub">August 06, 2025</span><span class="hc-label-main">She Said Yes &#9825;</span></div>
+      </div>
+      <!-- Card 4 — Wedding Welcome -->
+      <div class="hc-card" data-idx="4">
+        <div class="hc-card-bg" style="background:linear-gradient(160deg,#0a1f38 0%,#3a88c8 50%,#e6cc78 100%)">
+          <div class="hc-card-texture"></div>
+          <img src="assets/images/story-3.png" alt="Welcome to the Wedding of Jonah & John Paul" class="hc-card-photo">
+        </div>
+        <div class="hc-card-overlay"></div>
+        <div class="hc-card-label"><span class="hc-label-sub">June 06, 2026</span><span class="hc-label-main">Forever Begins</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Text content sits above carousel, left-aligned like the reference -->
+  <div class="hero-content">
+    <div class="hero-eyebrow">Together With Their Families</div>
+
+    <div class="hero-names">
+      <span class="hero-name">Jonah</span>
+      <span class="hero-amp">&amp;</span>
+      <span class="hero-name">John Paul</span>
+    </div>
+
+    <div class="hero-dash-line"></div>
+
+    <p class="hero-tagline">Invite you to celebrate their wedding</p>
+
+    <div class="hero-meta">
+      <span>Saturday</span><span class="hero-dot"></span>
+      <span>June 6, 2026</span><span class="hero-dot"></span>
+      <span>Cebu City, Philippines</span>
+    </div>
+
+    <div class="hero-divider"><div class="hero-div-line"></div><span class="hero-div-icon"><i class="fas fa-heart"></i></span><div class="hero-div-line"></div></div>
+
+    <div class="countdown" id="countdown">
+      <div class="cd-box"><span class="cd-num" id="days">--</span><span class="cd-lbl">Days</span></div><span class="cd-sep">:</span>
+      <div class="cd-box"><span class="cd-num" id="hours">--</span><span class="cd-lbl">Hours</span></div><span class="cd-sep">:</span>
+      <div class="cd-box"><span class="cd-num" id="mins">--</span><span class="cd-lbl">Minutes</span></div><span class="cd-sep">:</span>
+      <div class="cd-box"><span class="cd-num" id="secs">--</span><span class="cd-lbl">Seconds</span></div>
+    </div>
+
+    <a href="#story" class="hero-cta"><i class="fas fa-heart"></i> Explore Our Story</a>
+  </div>
+
+  <div class="hero-scroll"><span>Scroll</span><i class="fas fa-chevron-down"></i></div>
+</section>
+
+<script>
+/* ── 3D Hero Carousel with Click-to-Navigate ── */
+(function(){
+  var cards = Array.from(document.querySelectorAll('.hc-card'));
+  var total = cards.length;
+  var current = 1; // start at index 1 (center)
+  var autoTimer = null;
+
+  /* Map each card index → section anchor it navigates to */
+  var cardLinks = [
+    '#timeline',  // Card 0 — How We Met
+    '#story',     // Card 1 — Couple Since / About
+    '#story',     // Card 2 — Scripture / His Timing (also in story)
+    '#timeline',  // Card 3 — Engaged / Timeline
+    '#details'    // Card 4 — Forever Begins / Wedding Details
+  ];
+
+  /* Map each card index → friendly label shown in the hint tooltip */
+  var cardHints = [
+    'View Our Story',
+    'About the Couple',
+    'Our Love Story',
+    'View Our Journey',
+    'Wedding Details'
+  ];
+
+  function getPos(i) {
+    var diff = i - current;
+    if (diff > Math.floor(total/2)) diff -= total;
+    if (diff < -Math.floor(total/2)) diff += total;
+    return diff;
+  }
+
+  function update() {
+    cards.forEach(function(card, i) {
+      var pos = getPos(i);
+      var abs = Math.abs(pos);
+      card.className = 'hc-card';
+      if (pos === 0)       card.classList.add('hc-center');
+      else if (pos === -1) card.classList.add('hc-left');
+      else if (pos === 1)  card.classList.add('hc-right');
+      else if (pos <= -2)  card.classList.add('hc-far-left');
+      else                 card.classList.add('hc-far-right');
+      card.style.zIndex = 10 - abs;
+
+      /* Update the navigate hint on center card */
+      var hint = card.querySelector('.hc-nav-hint');
+      if (pos === 0) {
+        if (!hint) {
+          hint = document.createElement('div');
+          hint.className = 'hc-nav-hint';
+          hint.innerHTML = '<i class="fas fa-arrow-down"></i><span>' + cardHints[i] + '</span>';
+          card.appendChild(hint);
+        }
+        hint.querySelector('span').textContent = cardHints[i];
+        setTimeout(function(){ hint.classList.add('visible'); }, 400);
+      } else {
+        if (hint) hint.classList.remove('visible');
+      }
+    });
+  }
+
+  function startAuto() {
+    stopAuto();
+    autoTimer = setInterval(function(){ current=(current+1)%total; update(); }, 4000);
+  }
+  function stopAuto() {
+    if (autoTimer) { clearInterval(autoTimer); autoTimer = null; }
+  }
+
+  /* Ripple effect on card click */
+  function spawnRipple(card, e) {
+    var rect = card.getBoundingClientRect();
+    var x = (e.clientX || rect.left + rect.width/2) - rect.left;
+    var y = (e.clientY || rect.top  + rect.height/2) - rect.top;
+    var rip = document.createElement('span');
+    rip.className = 'hc-ripple';
+    rip.style.left = x + 'px';
+    rip.style.top  = y + 'px';
+    card.appendChild(rip);
+    setTimeout(function(){ rip.remove(); }, 700);
+  }
+
+  /* Click handler */
+  cards.forEach(function(card, i) {
+    card.addEventListener('click', function(e) {
+      var pos = getPos(i);
+      if (pos !== 0) {
+        /* Side card — bring it to center first */
+        stopAuto();
+        current = i;
+        update();
+        startAuto();
+      } else {
+        /* Center card — navigate to its section */
+        spawnRipple(card, e);
+        var target = document.querySelector(cardLinks[i]);
+        if (target) {
+          setTimeout(function(){
+            target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          }, 260);
+        }
+      }
+    });
+  });
+
+  document.getElementById('hcPrev').addEventListener('click', function(){
+    stopAuto(); current = (current - 1 + total) % total; update(); startAuto();
+  });
+  document.getElementById('hcNext').addEventListener('click', function(){
+    stopAuto(); current = (current + 1) % total; update(); startAuto();
+  });
+
+  /* Swipe support */
+  var startX = 0, startY = 0, dragging = false;
+  var track = document.getElementById('hcTrack');
+  track.addEventListener('touchstart', function(e){ startX = e.touches[0].clientX; startY = e.touches[0].clientY; dragging = false; }, {passive:true});
+  track.addEventListener('touchmove',  function(e){ if(Math.abs(e.touches[0].clientX-startX)>8) dragging=true; }, {passive:true});
+  track.addEventListener('touchend',   function(e){
+    var dx = e.changedTouches[0].clientX - startX;
+    if (Math.abs(dx) > 40) {
+      stopAuto();
+      if (dx > 0) current = (current-1+total)%total;
+      else        current = (current+1)%total;
+      update(); startAuto();
+    }
+  });
+
+  update();
+  startAuto();
+})();
+</script>
+
+<style>
+/* ── Carousel nav hint on center card ── */
+.hc-nav-hint {
+  position: absolute;
+  bottom: 56px; left: 50%;
+  transform: translateX(-50%) translateY(8px);
+  display: flex; flex-direction: column; align-items: center; gap: 4px;
+  opacity: 0; pointer-events: none;
+  transition: opacity .45s ease, transform .45s ease;
+  z-index: 10;
+}
+.hc-nav-hint.visible {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+.hc-nav-hint i {
+  color: rgba(200,160,64,.9);
+  font-size: .7rem;
+  animation: hintBounce 1.4s ease-in-out infinite;
+}
+.hc-nav-hint span {
+  font-family: 'Raleway', sans-serif;
+  font-size: .5rem; letter-spacing: 2.5px;
+  text-transform: uppercase; font-weight: 700;
+  color: rgba(255,255,255,.75);
+  white-space: nowrap;
+  background: rgba(10,31,56,.55);
+  padding: 4px 10px; border-radius: 999px;
+  backdrop-filter: blur(6px);
+  border: 1px solid rgba(255,255,255,.1);
+}
+@keyframes hintBounce {
+  0%,100%{ transform: translateY(0); }
+  50%     { transform: translateY(4px); }
+}
+
+/* ── Click ripple on center card ── */
+.hc-ripple {
+  position: absolute;
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: rgba(200,160,64,.65);
+  transform: translate(-50%,-50%) scale(0);
+  animation: hcRippleAnim .65s ease-out forwards;
+  pointer-events: none; z-index: 20;
+}
+@keyframes hcRippleAnim {
+  to { transform: translate(-50%,-50%) scale(28); opacity: 0; }
+}
+
+/* Center card shows pointer cursor so it feels tappable */
+.hc-card.hc-center { cursor: pointer; }
+.hc-card.hc-left,
+.hc-card.hc-right  { cursor: pointer; }
+</style>
+
+<div class="ticker-bar"><div class="ticker-track" id="bannerTicker">
+  <span>&#9825;&nbsp; Jonah &amp; John Paul &nbsp;&#10022;&nbsp; <b>June 6, 2026</b> &nbsp;&#10022;&nbsp; Church of Mary Coredemptrix &nbsp;&#10022;&nbsp; St. Rita Hall, Tabor Hill &nbsp;&#10022;&nbsp; Cebu City &nbsp;&#9825;&nbsp; We Can&rsquo;t Wait to Celebrate With You &nbsp;&#10022;&nbsp; #JonahAndJohnPaulForever &nbsp;&#10022;&nbsp;</span>
+  <span>&#9825;&nbsp; Jonah &amp; John Paul &nbsp;&#10022;&nbsp; <b>June 6, 2026</b> &nbsp;&#10022;&nbsp; Church of Mary Coredemptrix &nbsp;&#10022;&nbsp; St. Rita Hall, Tabor Hill &nbsp;&#10022;&nbsp; Cebu City &nbsp;&#9825;&nbsp; We Can&rsquo;t Wait to Celebrate With You &nbsp;&#10022;&nbsp; #JonahAndJohnPaulForever &nbsp;&#10022;&nbsp;</span>
+</div></div>
+
+<!-- ══ SCRIPTURE BANNER ══════════════════════════════════════════════════ -->
+<section class="scripture-banner" data-aos="fade-up">
+  <div class="sb-inner">
+    <div class="sb-img-wrap">
+      <img src="assets/images/story-5.png" alt="Jonah and John Paul at the farm" loading="lazy">
+      <div class="sb-overlay"></div>
+    </div>
+    <div class="sb-text">
+      <i class="fas fa-dove sb-icon"></i>
+      <blockquote>
+        &ldquo;When the time is right, I, the Lord will make it happen.&rdquo;
+      </blockquote>
+      <cite>— Isaiah 60:22</cite>
+    </div>
+  </div>
+</section>
+
+<!-- ══ COUPLE INTRO ═════════════════════════════════════════════════════ -->
+<section class="couple-intro" id="story">
+  <div class="ci-inner">
+    <div class="section-header" data-aos="fade-up">
+      <div class="s-tag">10th Year Love Story</div>
+      <h2 class="s-title">About the Couple</h2>
+      <div class="s-rule"></div>
+      <p class="s-desc">Two hearts. One decade. Forever begins June 6, 2026.</p>
+    </div>
+
+    <!-- Love Story Photos — couple since / engaged -->
+    <div class="ci-photo-pair" data-aos="fade-up">
+      <div class="ci-photo-card">
+        <img src="assets/images/story-1.png" alt="Couple since August 06, 2015" loading="lazy">
+        <div class="ci-photo-caption">Couple since August 06, 2015</div>
+      </div>
+      <div class="ci-photo-card">
+        <img src="assets/images/story-2.png" alt="Got engaged, August 06, 2025" loading="lazy">
+        <div class="ci-photo-caption">Got engaged, August 06, 2025</div>
+      </div>
+    </div>
+
+    <!-- About the Bride -->
+    <div class="ci-profile" data-aos="fade-right">
+      <div class="ci-profile-img">
+        <img src="assets/images/story-7.png" alt="Jonah P. Carmelotes — The Bride" loading="lazy">
+        <div class="ci-profile-label">The Bride</div>
+      </div>
+      <div class="ci-profile-text">
+        <h3 class="ci-profile-title">About the Bride</h3>
+        <h4 class="ci-profile-name">Jonah P. Carmelotes</h4>
+        <p>Meet <strong>Jonah P. Carmelotes,</strong> the youngest among her siblings — a 26-year-old woman currently working at Virginia Food Inc. A kind-hearted and generous person, Jonah always finds ways to share her blessings with others whenever she can.</p>
+        <p>She loves the colors blue and white, finds peace in both the mountains and the sea, and enjoys listening to worship songs and reading books during her quiet moments. She also has a soft spot for Jollibee and coffee.</p>
+        <p>Growing up, Jonah witnessed the hardships of life at an early age. Those experiences shaped her into the strong, determined, and ambitious woman she is today. Now, at the age of 26, she is finally marrying the man she once prayed for — the one her heart has waited for, loved, and chosen through faith and time.</p>
+        <div class="ci-profile-tags">
+          <span><i class="fas fa-heart"></i> Blue &amp; White</span>
+          <span><i class="fas fa-mountain"></i> Mountains &amp; Sea</span>
+          <span><i class="fas fa-music"></i> Worship Songs</span>
+          <span><i class="fas fa-book"></i> Books</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- About the Groom -->
+    <div class="ci-profile ci-profile-r" data-aos="fade-left">
+      <div class="ci-profile-text">
+        <h3 class="ci-profile-title">About the Groom</h3>
+        <h4 class="ci-profile-name">John Paul A. Martinez</h4>
+        <p>Meet <strong>John Paul A. Martinez,</strong> born on June 10, 2000 — now 25 years old. He is the youngest in their family and a man known for his quiet strength and humble personality.</p>
+        <p>At a young age, John Paul had to stop going to school and choose to work instead so he could help support his family. Life may not have been easy for him, but those experiences shaped him into the hardworking and responsible man he is today.</p>
+        <p>He enjoys playing online games with his friends, loves the colors green and blue, and finds happiness in nature — especially going to the sea and camping in the mountains. He also loves Jollibee, and his favorite is their famous spaghetti.</p>
+        <p>And now, with a grateful heart and unwavering love, he is ready to spend forever with the woman he has loved for the past 10 years.</p>
+        <div class="ci-profile-tags">
+          <span><i class="fas fa-gamepad"></i> Online Games</span>
+          <span><i class="fas fa-water"></i> Sea &amp; Mountains</span>
+          <span><i class="fas fa-leaf"></i> Green &amp; Blue</span>
+          <span><i class="fas fa-heart"></i> Brave Heart</span>
+        </div>
+      </div>
+      <div class="ci-profile-img">
+        <img src="assets/images/story-8.png" alt="John Paul A. Martinez — The Groom" loading="lazy">
+        <div class="ci-profile-label">The Groom</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ HOW WE MET ════════════════════════════════════════════════════════ -->
+<section class="how-we-met" id="timeline">
+  <div class="hwm-inner">
+    <div class="section-header" data-aos="fade-up">
+      <div class="s-tag">The Beginning</div>
+      <h2 class="s-title">How We Met</h2>
+      <div class="s-rule"></div>
+    </div>
+
+    <!-- Split layout: tan panel + photo (like slide 9) -->
+    <div class="hwm-split" data-aos="fade-up">
+      <div class="hwm-panel">
+        <div class="hwm-panel-eyebrow">How We Meet</div>
+        <div class="hwm-panel-year">In 2015</div>
+        <div class="hwm-panel-dots"><span></span><span class="active"></span></div>
+      </div>
+      <div class="hwm-photo">
+        <img src="assets/images/story-9.png" alt="Jonah and John Paul — How We Met" loading="lazy">
+      </div>
+    </div>
+
+    <!-- Story text + school photos -->
+    <div class="hwm-story" data-aos="fade-up">
+      <div class="hwm-story-photos">
+        <img src="assets/images/story-10.png" alt="Talamban National High School — where they met" loading="lazy">
+      </div>
+      <div class="hwm-story-text">
+        <p>Fate brought them back together when Jonah became their Dance Instructor during a playground demo at <strong>Talamban National High School.</strong> What started as a simple reunion and a casual <em>"kamusta"</em> unexpectedly reopened a connection between two hearts.</p>
+        <p>From that moment on, conversations became more frequent, laughter became more genuine, and their bond slowly grew deeper. Neither of them knew that the small moment of seeing each other again would become the start of a beautiful love story.</p>
+        <p>As days turned into months and years, their connection blossomed into a relationship built with love, patience, friendship, and dreams. And now, after all the memories they created together, they are finally preparing to begin their forever.</p>
+      </div>
+    </div>
+
+    <!-- Timeline milestones -->
+    <div class="tl" style="margin-top:48px">
+      <div class="tl-item" data-aos="fade-right">
+        <div class="tl-dot"><i class="fas fa-school"></i></div>
+        <div class="tl-card">
+          <span class="tl-date">2014 — Talamban, Cebu</span>
+          <h3>First Encounter</h3>
+          <p>They first met at Talamban National High School. A casual encounter that planted the first seed.</p>
+        </div>
+      </div>
+      <div class="tl-item r" data-aos="fade-left">
+        <div class="tl-dot"><i class="fas fa-music"></i></div>
+        <div class="tl-card">
+          <span class="tl-date">2015</span>
+          <h3>Reconnected</h3>
+          <p>Fate brought them back together when Jonah became a Dance Instructor during a playground demo. A simple <em>"kamusta"</em> reignited everything.</p>
+        </div>
+      </div>
+      <div class="tl-item" data-aos="fade-right">
+        <div class="tl-dot"><i class="fas fa-heart"></i></div>
+        <div class="tl-card">
+          <span class="tl-date">August 06, 2015</span>
+          <h3>Together &#9825;</h3>
+          <p>They officially became a couple — the beginning of a love story built on faith, friendship, and a decade of devotion.</p>
+        </div>
+      </div>
+      <div class="tl-item r" data-aos="fade-left">
+        <div class="tl-dot"><i class="fas fa-camera"></i></div>
+        <div class="tl-card">
+          <span class="tl-date">Through the Years</span>
+          <h3>Adventures Together</h3>
+          <p>Mountains, beaches, quiet moments — they explored life side by side, growing deeper in love with every shared experience.</p>
+        </div>
+      </div>
+      <div class="tl-item" data-aos="fade-right">
+        <div class="tl-dot tl-dot-heart"><i class="fas fa-ring"></i></div>
+        <div class="tl-card highlight">
+          <span class="tl-date">August 06, 2025</span>
+          <h3>The Proposal &#9825;</h3>
+          <p>On their 10th anniversary, John Paul got down on one knee — and she said <strong>YES!</strong> A decade of love, sealed with a promise.</p>
+        </div>
+      </div>
+      <div class="tl-item r" data-aos="fade-left">
+        <div class="tl-dot"><i class="fas fa-church"></i></div>
+        <div class="tl-card">
+          <span class="tl-date">June 06, 2026</span>
+          <h3>Forever Begins</h3>
+          <p>Church of Mary Coredemptrix, Cebu City. The day they say "I do" and begin the greatest chapter yet.</p>
+        </div>
+      </div>
+    </div>
+
+    <blockquote class="story-quote" data-aos="fade-up">
+      &ldquo;When the time is right, I, the Lord will make it happen.&rdquo;
+      <cite>— Isaiah 60:22</cite>
+    </blockquote>
+  </div>
+</section>
+
+<style>
+/* ── SCRIPTURE BANNER ── */
+.scripture-banner{position:relative;overflow:hidden;height:clamp(280px,45vw,520px);display:flex;align-items:center;justify-content:center;}
+.sb-inner{position:relative;width:100%;height:100%;}
+.sb-img-wrap{position:absolute;inset:0;}
+.sb-img-wrap img{width:100%;height:100%;object-fit:cover;object-position:center 30%;}
+.sb-overlay{position:absolute;inset:0;background:linear-gradient(135deg,rgba(4,13,26,.82) 0%,rgba(10,31,56,.65) 100%);}
+.sb-text{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:0 24px;gap:16px;}
+.sb-icon{font-size:2rem;color:rgba(200,160,64,.7);margin-bottom:8px;}
+.sb-text blockquote{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:clamp(1.2rem,3.5vw,2.2rem);color:white;font-weight:300;line-height:1.4;max-width:800px;margin:0;}
+.sb-text cite{font-family:'Raleway',sans-serif;font-size:.65rem;letter-spacing:4px;text-transform:uppercase;color:rgba(200,160,64,.8);font-style:normal;font-weight:600;}
+
+/* ── COUPLE INTRO ── */
+.couple-intro{background:white;padding:80px 0 60px;}
+.ci-inner{max-width:1100px;margin:0 auto;padding:0 32px;}
+
+.ci-photo-pair{display:grid;grid-template-columns:1fr 1fr;gap:28px;margin:48px 0 64px;}
+.ci-photo-card{position:relative;border-radius:8px;overflow:hidden;box-shadow:0 8px 40px rgba(0,0,0,.12);}
+.ci-photo-card img{width:100%;height:340px;object-fit:cover;display:block;transition:transform .6s ease;}
+.ci-photo-card:hover img{transform:scale(1.04);}
+.ci-photo-caption{position:absolute;bottom:0;left:0;right:0;background:rgba(255,255,255,.92);backdrop-filter:blur(8px);padding:14px 20px;font-family:'Cormorant Garamond',serif;font-size:1.05rem;font-style:italic;color:#0a1f38;border-top:1px solid rgba(45,120,192,.12);}
+
+.ci-profile{display:grid;grid-template-columns:1fr 1.4fr;gap:48px;align-items:start;margin-bottom:72px;padding-bottom:64px;border-bottom:1px solid rgba(45,120,192,.1);}
+.ci-profile-r{grid-template-columns:1.4fr 1fr;}
+.ci-profile-img{position:relative;border-radius:12px;overflow:hidden;box-shadow:0 12px 48px rgba(0,0,0,.15);}
+.ci-profile-img img{width:100%;height:420px;object-fit:cover;object-position:top;display:block;}
+.ci-profile-label{position:absolute;bottom:0;left:0;right:0;background:linear-gradient(135deg,#0a1f38,#1d5fa3);color:white;text-align:center;padding:10px;font-family:'Cinzel Decorative',cursive;font-size:.65rem;letter-spacing:3px;text-transform:uppercase;}
+.ci-profile-title{font-family:'Cinzel Decorative',cursive;font-size:clamp(1.1rem,2.5vw,1.6rem);color:#0a1f38;margin-bottom:6px;line-height:1.2;}
+.ci-profile-name{font-family:'Dancing Script',cursive;font-size:clamp(1.6rem,3vw,2.2rem);color:#1d5fa3;margin-bottom:20px;}
+.ci-profile-text p{font-family:'Cormorant Garamond',serif;font-size:1.05rem;line-height:1.75;color:#1a3a5e;margin-bottom:14px;}
+.ci-profile-tags{display:flex;flex-wrap:wrap;gap:8px;margin-top:20px;}
+.ci-profile-tags span{display:inline-flex;align-items:center;gap:6px;padding:6px 14px;background:rgba(74,159,212,.08);border:1px solid rgba(45,120,192,.15);border-radius:999px;font-size:.65rem;letter-spacing:1.5px;text-transform:uppercase;color:#1d5fa3;font-weight:600;}
+.ci-profile-tags span i{color:#c8a040;}
+
+/* ── HOW WE MET ── */
+.how-we-met{background:linear-gradient(180deg,#f7fbff 0%,white 100%);padding:80px 0;}
+.hwm-inner{max-width:1100px;margin:0 auto;padding:0 32px;}
+
+.hwm-split{display:grid;grid-template-columns:1fr 2fr;gap:0;border-radius:12px;overflow:hidden;box-shadow:0 12px 50px rgba(0,0,0,.14);margin:48px 0;}
+.hwm-panel{background:#8a7355;padding:48px 40px;display:flex;flex-direction:column;justify-content:center;gap:16px;}
+.hwm-panel-eyebrow{font-family:'Cinzel Decorative',cursive;font-size:clamp(1.4rem,4vw,2.8rem);color:white;font-weight:400;line-height:1.1;text-transform:uppercase;letter-spacing:2px;}
+.hwm-panel-year{font-family:'Raleway',sans-serif;font-size:.7rem;letter-spacing:8px;text-transform:uppercase;color:rgba(255,255,255,.65);font-weight:600;}
+.hwm-panel-dots{display:flex;gap:8px;margin-top:24px;}
+.hwm-panel-dots span{width:12px;height:12px;border-radius:2px;background:rgba(255,255,255,.3);}
+.hwm-panel-dots span.active{background:white;}
+.hwm-photo{overflow:hidden;}
+.hwm-photo img{width:100%;height:100%;min-height:340px;object-fit:cover;object-position:top;display:block;}
+
+.hwm-story{display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:start;margin:48px 0;}
+.hwm-story-photos img{width:100%;border-radius:10px;box-shadow:0 8px 32px rgba(0,0,0,.12);}
+.hwm-story-text p{font-family:'Cormorant Garamond',serif;font-size:1.08rem;line-height:1.8;color:#1a3a5e;margin-bottom:16px;}
+
+/* Responsive */
+@media(max-width:760px){
+  .ci-photo-pair{grid-template-columns:1fr;}
+  .ci-profile,.ci-profile-r{grid-template-columns:1fr;}
+  .ci-profile-r .ci-profile-img{order:-1;}
+  .hwm-split{grid-template-columns:1fr;}
+  .hwm-story{grid-template-columns:1fr;}
+}
+</style>
+
+<section class="details-sec" id="details"><div class="details-inner">
+  <div class="section-header" data-aos="fade-up"><div class="s-tag">Save the Date</div><h2 class="s-title">Wedding Details</h2><div class="s-rule"></div></div>
+  <div class="details-grid">
+    <div class="d-card" data-aos="fade-up" data-aos-delay="100"><div class="d-icon"><i class="fas fa-church"></i></div><h3>The Ceremony</h3><p>Church of Mary Coredemptrix<br>Purok 4, Brgy. San Jose<br>6000 Cebu City</p><span class="d-badge"><i class="fas fa-clock"></i>&nbsp; 2:00 &ndash; 3:00 PM</span><a href="https://maps.google.com/maps?q=Church+of+Mary+Coredemptrix+Cebu" target="_blank" class="d-link"><i class="fas fa-map-marker-alt"></i> Get Directions &rsaquo;</a></div>
+    <div class="d-card" data-aos="fade-up" data-aos-delay="200"><div class="d-icon"><i class="fas fa-calendar-heart"></i></div><h3>The Date</h3><p>Saturday<br>June 6, 2026<br>Cebu City, Philippines</p><span class="d-badge"><i class="fas fa-sun"></i>&nbsp; 2:00 PM Onwards</span><a href="#" class="d-link" id="addToCalBtn"><i class="fas fa-calendar-plus"></i> Add to Calendar &rsaquo;</a></div>
+    <div class="d-card" data-aos="fade-up" data-aos-delay="300"><div class="d-icon"><i class="fas fa-glass-cheers"></i></div><h3>The Reception</h3><p>St. Rita Hall, Tabor Hill<br>Purok 3, Brgy. San Jose<br>6000 Cebu City</p><span class="d-badge"><i class="fas fa-clock"></i>&nbsp; 4:00 &ndash; 8:00 PM</span><a href="https://maps.google.com/maps?q=Tabor+Hill+Cebu" target="_blank" class="d-link"><i class="fas fa-map-marker-alt"></i> Get Directions &rsaquo;</a></div>
+  </div>
+  <div class="dress-card" data-aos="fade-up"><div class="dress-inner"><i class="fas fa-shirt dress-ico"></i><div><h3>Dress Code</h3><p>Kindly wear <strong>strictly formal attire</strong> and follow the designated color palette. Navy, steel blue, sky blue, and sage tones are encouraged. Please avoid white or black.</p></div><div class="swatches"><span class="swatch" style="background:#0a1f38"></span><span class="swatch" style="background:#1d5fa3"></span><span class="swatch" style="background:#4a9fd4"></span><span class="swatch" style="background:#7ec0e0"></span><span class="swatch" style="background:#8fa88a"></span><span class="swatch" style="background:#9aa090"></span></div></div></div>
+</div></section>
+
+<section class="sponsors-sec" id="sponsors"><div class="sponsors-inner">
+  <div class="section-header" data-aos="fade-up"><div class="s-tag">Carmelotes &middot; Martinez Nuptials</div><h2 class="s-title">Our Sponsors</h2><div class="s-rule"></div><p class="s-desc">With deep gratitude to those who blessed this union.</p></div>
+  <div class="sp-sub-label" data-aos="fade-up">Principal Sponsors</div>
+  <div class="sp-grid" data-aos="fade-up">
+    <div class="sp-card"><div class="sp-num">1</div><div class="sp-names"><span class="sp-role">Couple</span><p>Mr. Leodegario C. Ferolino Jr. &amp; Mrs. Rosianne S. Ferolino</p></div></div>
+    <div class="sp-card"><div class="sp-num">2</div><div class="sp-names"><span class="sp-role">Couple</span><p>Mr. Dandy Famador &amp; Mrs. Mitzie Ann M. Famador</p></div></div>
+    <div class="sp-card"><div class="sp-num">3</div><div class="sp-names"><span class="sp-role">Couple</span><p>Mr. Wilfredo Pareja &amp; Mrs. Milagros Pareja</p></div></div>
+    <div class="sp-card"><div class="sp-num">4</div><div class="sp-names"><span class="sp-role">Couple</span><p>Mr. Edgardo Incierto &amp; Mrs. Rosario Incierto</p></div></div>
+    <div class="sp-card"><div class="sp-num">5</div><div class="sp-names"><span class="sp-role">Couple</span><p>Mr. Ricky Jubahib &amp; Mrs. Arlyn Jubahib</p></div></div>
+    <div class="sp-card"><div class="sp-num">6</div><div class="sp-names"><span class="sp-role">Couple</span><p>Mr. Joselito Bugwac &amp; Mrs. Salome Bugwac</p></div></div>
+    <div class="sp-card"><div class="sp-num">7</div><div class="sp-names"><span class="sp-role">Couple</span><p>Mr. Rex Perales &amp; Mrs. Elvera Perales</p></div></div>
+    <div class="sp-card"><div class="sp-num">8</div><div class="sp-names"><span class="sp-role">Couple</span><p>Mr. Florito Nemaria &amp; Mrs. Marilou Nemaria</p></div></div>
+    <div class="sp-card"><div class="sp-num">9</div><div class="sp-names"><span class="sp-role">Couple</span><p>Mr. Lemuel Locabarte &amp; Mrs. Josephine Locabarte</p></div></div>
+    <div class="sp-card"><div class="sp-num">10</div><div class="sp-names"><span class="sp-role">Couple</span><p>Mr. Bobby Martinez &amp; Mrs. Lisa Martinez</p></div></div>
+  </div>
+  <div class="sp-spacer"></div>
+  <div class="sp-sub-label" data-aos="fade-up">Secondary Sponsors</div>
+  <div class="sp-grid" data-aos="fade-up">
+    <div class="sp-card sp-gold"><div class="sp-num"><i class="fas fa-fire fa-xs"></i></div><div class="sp-names"><span class="sp-role">Candle</span><p>Mr. Roland Dayle Ariete &amp; Mrs. Patricia Ariete</p></div></div>
+    <div class="sp-card sp-gold"><div class="sp-num"><i class="fas fa-ellipsis fa-xs"></i></div><div class="sp-names"><span class="sp-role">Veil</span><p>Mr. Stephen James Paragoso &amp; Mrs. Hannah Paragoso</p></div></div>
+    <div class="sp-card sp-gold"><div class="sp-num"><i class="fas fa-link fa-xs"></i></div><div class="sp-names"><span class="sp-role">Cord</span><p>Mr. Jayky Cabungcal &amp; Ms. Hannah Gaile Ferolino</p></div></div>
+    <div class="sp-card sp-gold"><div class="sp-num"><i class="fas fa-coins fa-xs"></i></div><div class="sp-names"><span class="sp-role">Coin Bearer</span><p>Ivan Salibongcogon</p></div></div>
+    <div class="sp-card sp-gold"><div class="sp-num"><i class="fas fa-ring fa-xs"></i></div><div class="sp-names"><span class="sp-role">Ring Bearer</span><p>Renz Salibongcogon</p></div></div>
+    <div class="sp-card sp-gold"><div class="sp-num"><i class="fas fa-spa fa-xs"></i></div><div class="sp-names"><span class="sp-role">Flower Girls</span><p>Kirstin Carmelotes &middot; Alithea Dable &middot; Kendra Paragoso &middot; Anak te Jade</p></div></div>
+    <div class="sp-card sp-gold"><div class="sp-num"><i class="fas fa-spa fa-xs"></i></div><div class="sp-names"><span class="sp-role">Flower Maiden</span><p>Erica Salibongcogon &middot; Mary Ashley Sumalpong &middot; Althea Faith Batican</p></div></div>
+  </div>
+  <div class="sp-spacer"></div>
+  <div class="sp-sub-label" data-aos="fade-up">Offerers</div>
+  <div class="sp-grid" data-aos="fade-up">
+    <div class="sp-card sp-blue"><div class="sp-num"><i class="fas fa-bread-slice fa-xs"></i></div><div class="sp-names"><span class="sp-role">Bread &amp; Wine</span><p>Mr. Saturnino Alcazar III &amp; Mrs. Irene P. Alcazar<br>Mr. Aldren Torrechiva &amp; Mrs. Rizabeth Torrechiva</p></div></div>
+    <div class="sp-card sp-blue"><div class="sp-num"><i class="fas fa-apple-whole fa-xs"></i></div><div class="sp-names"><span class="sp-role">Fruits</span><p>Mr. Joselito Estrabella Jr. &amp; Ms. Fretzie Marie Perales<br>Ms. Zenny Tricia Dagcuta &amp; Ms. Fritzie Mae Gabiana</p></div></div>
+  </div>
+</div></section>
+
+<section class="bridal-sec" id="bridal"><div class="bridal-inner">
+  <div class="section-header" data-aos="fade-up"><div class="s-tag">The Squad</div><h2 class="s-title">Bridal Party</h2><div class="s-rule"></div></div>
+  <div class="bridal-tabs" data-aos="fade-up"><button class="b-tab active" data-tab="bridesmaids">Bridesmaids</button><button class="b-tab" data-tab="groomsmen">Groomsmen</button></div>
+  <div class="b-grid" id="bridesmaids">
+    <div class="b-card" data-aos="fade-up" data-aos-delay="60"><div class="b-avatar" style="background:linear-gradient(135deg,#c8a040,#e6cc78)"><i class="fas fa-crown"></i></div><h4>Chrusty Kaye A. Perales</h4><span>Maid of Honor</span></div>
+    <div class="b-card" data-aos="fade-up" data-aos-delay="90"><div class="b-avatar" style="background:linear-gradient(135deg,#4a9fd4,#1d5fa3)"><i class="fas fa-star"></i></div><h4>Hazil C. Paragoso</h4><span>Matron of Honor</span></div>
+    <div class="b-card" data-aos="fade-up" data-aos-delay="120"><div class="b-avatar" style="background:linear-gradient(135deg,#5aaad8,#2d78c0)"><i class="fas fa-heart"></i></div><h4>Ruby Ann Dable</h4><span>Bridesmaid</span></div>
+    <div class="b-card" data-aos="fade-up" data-aos-delay="150"><div class="b-avatar" style="background:linear-gradient(135deg,#4a9fd4,#1d5fa3)"><i class="fas fa-heart"></i></div><h4>Alaiza Shane Batican</h4><span>Bridesmaid</span></div>
+    <div class="b-card" data-aos="fade-up" data-aos-delay="180"><div class="b-avatar" style="background:linear-gradient(135deg,#4a9fd4,#1d5fa3)"><i class="fas fa-heart"></i></div><h4>Mary Grace Morre</h4><span>Bridesmaid</span></div>
+    <div class="b-card" data-aos="fade-up" data-aos-delay="210"><div class="b-avatar" style="background:linear-gradient(135deg,#3a90c5,#1a4f80)"><i class="fas fa-heart"></i></div><h4>Karylle Dianne Perales</h4><span>Bridesmaid</span></div>
+    <div class="b-card" data-aos="fade-up" data-aos-delay="240"><div class="b-avatar" style="background:linear-gradient(135deg,#5aaad8,#2d78c0)"><i class="fas fa-heart"></i></div><h4>Antonette Martinez</h4><span>Bridesmaid</span></div>
+    <div class="b-card" data-aos="fade-up" data-aos-delay="270"><div class="b-avatar" style="background:linear-gradient(135deg,#4a9fd4,#122944)"><i class="fas fa-heart"></i></div><h4>Jessa Codoy</h4><span>Bridesmaid</span></div>
+    <div class="b-card" data-aos="fade-up" data-aos-delay="300"><div class="b-avatar" style="background:linear-gradient(135deg,#3a88c8,#1a3a5e)"><i class="fas fa-heart"></i></div><h4>Clarice Paragoso</h4><span>Bridesmaid</span></div>
+    <div class="b-card" data-aos="fade-up" data-aos-delay="330"><div class="b-avatar" style="background:linear-gradient(135deg,#5090bc,#2d78c0)"><i class="fas fa-heart"></i></div><h4>Larra Charisse Benigra</h4><span>Bridesmaid</span></div>
+    <div class="b-card" data-aos="fade-up" data-aos-delay="360"><div class="b-avatar" style="background:linear-gradient(135deg,#4a9fd4,#122944)"><i class="fas fa-heart"></i></div><h4>Leikaila Casallas</h4><span>Bridesmaid</span></div>
+    <div class="b-card" data-aos="fade-up" data-aos-delay="390"><div class="b-avatar" style="background:linear-gradient(135deg,#3a70a5,#0a1f38)"><i class="fas fa-heart"></i></div><h4>Kloe Urtezuela</h4><span>Bridesmaid</span></div>
+  </div>
+  <div class="b-grid hidden" id="groomsmen">
+    <div class="b-card" data-aos="fade-up" data-aos-delay="60"><div class="b-avatar" style="background:linear-gradient(135deg,#c8a040,#e6cc78)"><i class="fas fa-crown"></i></div><h4>Gian Carlo N. Velasquez</h4><span>Best Man</span></div>
+    <div class="b-card" data-aos="fade-up" data-aos-delay="90"><div class="b-avatar" style="background:linear-gradient(135deg,#2d78c0,#122944)"><i class="fas fa-user-tie"></i></div><h4>Lyndon Carmelotes</h4><span>Groomsman</span></div>
+    <div class="b-card" data-aos="fade-up" data-aos-delay="120"><div class="b-avatar" style="background:linear-gradient(135deg,#3a88c8,#1a4a70)"><i class="fas fa-user-tie"></i></div><h4>Gladwyn Sumalpong</h4><span>Groomsman</span></div>
+    <div class="b-card" data-aos="fade-up" data-aos-delay="150"><div class="b-avatar" style="background:linear-gradient(135deg,#4a9fd4,#2a5a80)"><i class="fas fa-user-tie"></i></div><h4>Ariel Martinez</h4><span>Groomsman</span></div>
+    <div class="b-card" data-aos="fade-up" data-aos-delay="180"><div class="b-avatar" style="background:linear-gradient(135deg,#5590b8,#2d78c0)"><i class="fas fa-user-tie"></i></div><h4>Bryan Cogtas</h4><span>Groomsman</span></div>
+    <div class="b-card" data-aos="fade-up" data-aos-delay="210"><div class="b-avatar" style="background:linear-gradient(135deg,#3a88c8,#1a3a5e)"><i class="fas fa-user-tie"></i></div><h4>Andrey Alsola</h4><span>Groomsman</span></div>
+    <div class="b-card" data-aos="fade-up" data-aos-delay="240"><div class="b-avatar" style="background:linear-gradient(135deg,#2d78c0,#0a1f38)"><i class="fas fa-user-tie"></i></div><h4>Romeo Dable Jr.</h4><span>Groomsman</span></div>
+    <div class="b-card" data-aos="fade-up" data-aos-delay="270"><div class="b-avatar" style="background:linear-gradient(135deg,#4a9fd4,#1a3a5e)"><i class="fas fa-user-tie"></i></div><h4>Christian Alsola</h4><span>Groomsman</span></div>
+    <div class="b-card" data-aos="fade-up" data-aos-delay="300"><div class="b-avatar" style="background:linear-gradient(135deg,#3a78a8,#122944)"><i class="fas fa-user-tie"></i></div><h4>Howard Kent Engnan</h4><span>Groomsman</span></div>
+    <div class="b-card" data-aos="fade-up" data-aos-delay="330"><div class="b-avatar" style="background:linear-gradient(135deg,#2d78c0,#1a3a5e)"><i class="fas fa-user-tie"></i></div><h4>Gerardo Senados</h4><span>Groomsman</span></div>
+    <div class="b-card" data-aos="fade-up" data-aos-delay="360"><div class="b-avatar" style="background:linear-gradient(135deg,#4a9fd4,#0a1f38)"><i class="fas fa-user-tie"></i></div><h4>Jestoni Carmelotes</h4><span>Groomsman</span></div>
+  </div>
+</div></section>
+
+<section class="gallery-sec" id="gallery"><div class="gallery-inner">
+  <div class="section-header" data-aos="fade-up"><div class="s-tag">Captured Moments</div><h2 class="s-title">Photo Gallery</h2><div class="s-rule"></div></div>
+  <div class="gallery-banner" data-aos="fade-up"><div class="g-banner-left"><div class="g-banner-icon"><i class="fas fa-images"></i></div><div class="g-banner-text"><h3>Browse Our Memories</h3><p>8 photos &mdash; add yours after the wedding!</p></div></div><a href="guest-upload.html" class="g-share-btn"><i class="fas fa-camera"></i>&nbsp; Share Your Photos</a></div>
+  <div class="gallery-tabs" data-aos="fade-up"><button class="g-tab active" data-gtab="all">All Photos</button><button class="g-tab" data-gtab="couple">Our Memories</button><button class="g-tab" data-gtab="guest">Guest Shots</button></div>
+  <div class="gallery-count" id="galleryPhotoCount"></div>
+  <div class="gallery-grid" id="mainGalleryGrid"></div>
+</div></section>
+
+<section class="wishes-sec" id="wishes"><div class="wishes-inner">
+  <div class="section-header" data-aos="fade-up"><div class="s-tag">Kind Words</div><h2 class="s-title">Wishes &amp; Messages</h2><div class="s-rule"></div><p class="s-desc">Leave a heartfelt message for the happy couple.</p></div>
+  <div class="wish-form-wrap" data-aos="fade-up">
+    <div class="wish-row"><input type="text" id="wishName" placeholder="Your name&hellip;" class="wish-inp"><button class="wish-btn" id="wishBtn" onclick="submitWish()"><i class="fas fa-paper-plane"></i> Send Wish</button></div>
+    <textarea id="wishText" placeholder="Write your heartfelt message for Jonah &amp; John Paul&hellip;" class="wish-ta"></textarea>
+  </div>
+  <div class="wishes-wall" id="wishesWall"></div>
+</div></section>
+
+<section class="rsvp-sec" id="rsvp"><div class="rsvp-dots"></div><div class="rsvp-inner">
+  <div class="section-header" data-aos="fade-up"><div class="s-tag">Join Us</div><h2 class="s-title">RSVP</h2><div class="s-rule"></div><p class="s-desc">Please respond by May 15, 2026</p></div>
+  <div class="rsvp-form" data-aos="fade-up">
+    <div id="rsvp-form-content">
+      <div class="form-row"><div class="form-group"><label><i class="fas fa-user"></i> First Name</label><input type="text" placeholder="Jane" id="fname"></div><div class="form-group"><label><i class="fas fa-user"></i> Last Name</label><input type="text" placeholder="Doe" id="lname"></div></div>
+      <div class="form-group"><label><i class="fas fa-envelope"></i> Email Address</label><input type="email" placeholder="jane@example.com" id="email"></div>
+      <div class="form-group"><label><i class="fas fa-phone"></i> Phone Number</label><input type="tel" placeholder="+63 912 345 6789" id="phone"></div>
+      <div class="form-row"><div class="form-group"><label><i class="fas fa-circle-check"></i> Attendance</label><select id="attendance"><option value="">Select&hellip;</option><option>Joyfully Accepts</option><option>Regretfully Declines</option></select></div><div class="form-group"><label><i class="fas fa-users"></i> No. of Guests</label><select id="guests"><option>1</option><option>2</option><option>3</option><option>4+</option></select></div></div>
+      <div class="form-group"><label><i class="fas fa-comment-heart"></i> Message for the Couple</label><textarea placeholder="A lovely message&hellip;" id="message"></textarea></div>
+      <button class="rsvp-btn" id="rsvpBtn" onclick="submitRSVP()"><i class="fas fa-heart"></i>&nbsp; Send My RSVP</button>
+    </div>
+    <div class="rsvp-ok" id="rsvp-success"><div class="rsvp-ok-hearts"><i class="fas fa-heart"></i><i class="fas fa-heart big"></i><i class="fas fa-heart"></i></div><h3>We Can&rsquo;t Wait to See You!</h3><p id="rsvp-success-msg">Your RSVP has been received. Thank you so much!</p></div>
+  </div>
+</div></section>
+
+<!-- ══ WEDDING GIFT SECTION ══════════════════════════════════════════════ -->
+<section class="gift-sec" id="gifts">
+  <div class="gift-inner">
+
+    <!-- Header -->
+    <div class="section-header" data-aos="fade-up">
+      <div class="s-tag">Wedding Gift</div>
+      <h2 class="s-title">Send Your Love</h2>
+      <div class="s-rule"></div>
+      <p class="s-desc">Your presence is the greatest gift of all. But if you wish to bless us with a monetary gift, we&rsquo;ve made it easy with the options below. &#9825;</p>
+    </div>
+
+    <!-- Scripture note -->
+    <p class="gift-verse" data-aos="fade-up">&ldquo;Every good and perfect gift is from above.&rdquo; &mdash; James 1:17</p>
+
+    <!-- QR Cards -->
+    <div class="gift-cards" data-aos="fade-up">
+
+      <!-- BDO Card -->
+      <div class="gift-card">
+        <div class="gift-card-header gift-bdo">
+          <div class="gift-bank-logo">
+            <span class="gift-logo-b">B</span><span class="gift-logo-d">D</span><span class="gift-logo-o">O</span>
+          </div>
+          <div class="gift-bank-name">BDO Unibank</div>
+        </div>
+        <div class="gift-card-body">
+          <div class="gift-qr-wrap">
+            <img src="assets/images/qr-bdo.jpg" alt="BDO InstaPay QR Code" class="gift-qr-img" id="qrBdo">
+            <div class="gift-qr-shine"></div>
+            <div class="gift-scan-badge"><i class="fas fa-qrcode"></i> Scan to Pay</div>
+          </div>
+          <div class="gift-details">
+            <div class="gift-account-name">Jonah</div>
+            <div class="gift-account-num">Account ending in <strong>7001</strong></div>
+            <div class="gift-instapay"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/5e/InstaPay_logo.svg/120px-InstaPay_logo.svg.png" alt="InstaPay" onerror="this.style.display='none'"> <span>via InstaPay</span></div>
+            <p class="gift-note"><i class="fas fa-info-circle"></i> BDO to BDO transfers are free. Fees may apply for non-BDO transfers.</p>
+            <button class="gift-enlarge-btn" onclick="enlargeQR('qrBdo','BDO — Jonah (****7001)')">
+              <i class="fas fa-expand-alt"></i> View Full QR
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- MariBank Card -->
+      <div class="gift-card">
+        <div class="gift-card-header gift-mari">
+          <div class="gift-bank-logo gift-mari-logo">
+            <span>M</span>
+          </div>
+          <div class="gift-bank-name">MariBank</div>
+        </div>
+        <div class="gift-card-body">
+          <div class="gift-qr-wrap">
+            <img src="assets/images/qr-maribank.jpg" alt="MariBank InstaPay QR Code" class="gift-qr-img" id="qrMari">
+            <div class="gift-qr-shine"></div>
+            <div class="gift-scan-badge"><i class="fas fa-qrcode"></i> Scan to Pay</div>
+          </div>
+          <div class="gift-details">
+            <div class="gift-account-name">Jonah Carmelotes</div>
+            <div class="gift-account-num">Account ending in <strong>8332</strong></div>
+            <div class="gift-instapay"><span>via InstaPay</span></div>
+            <p class="gift-note"><i class="fas fa-info-circle"></i> QR code generated from the MariBank app.</p>
+            <button class="gift-enlarge-btn" onclick="enlargeQR('qrMari','MariBank — Jonah Carmelotes (****8332)')">
+              <i class="fas fa-expand-alt"></i> View Full QR
+            </button>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /.gift-cards -->
+
+    <p class="gift-thank" data-aos="fade-up">
+      <i class="fas fa-heart"></i>&nbsp; Thank you so much for your love and generosity. We are truly blessed to have you with us on this special day.
+    </p>
+
+  </div>
+</section>
+
+<!-- QR Lightbox Modal -->
+<div class="gift-modal" id="giftModal" onclick="closeGiftModal()">
+  <div class="gift-modal-inner" onclick="event.stopPropagation()">
+    <button class="gift-modal-close" onclick="closeGiftModal()"><i class="fas fa-times"></i></button>
+    <div class="gift-modal-title" id="giftModalTitle"></div>
+    <img src="" id="giftModalImg" alt="QR Code" class="gift-modal-qr">
+    <p class="gift-modal-hint"><i class="fas fa-mobile-alt"></i> Open your banking app and point your camera at this QR code</p>
+    <div class="gift-modal-instapay">Powered by <strong>InstaPay</strong></div>
+  </div>
+</div>
+
+<style>
+/* ══ GIFT SECTION ══════════════════════════════════════════════════════ */
+.gift-sec{
+  background:linear-gradient(180deg,#f0f7ff 0%,#e8f3fc 50%,#f5f9fe 100%);
+  padding:80px 0 70px;
+}
+.gift-inner{max-width:1060px;margin:0 auto;padding:0 32px;text-align:center;}
+
+.gift-verse{
+  font-family:'Cormorant Garamond',serif;font-style:italic;
+  font-size:1.05rem;color:#1d5fa3;margin:0 auto 48px;
+  opacity:.7;max-width:500px;
+}
+
+/* Cards container */
+.gift-cards{
+  display:grid;grid-template-columns:1fr 1fr;
+  gap:28px;max-width:820px;margin:0 auto 40px;
+}
+
+/* Individual card */
+.gift-card{
+  background:white;border-radius:20px;
+  box-shadow:0 8px 40px rgba(45,120,192,.1),0 2px 8px rgba(0,0,0,.05);
+  overflow:hidden;
+  border:1px solid rgba(45,120,192,.1);
+  transition:transform .3s ease,box-shadow .3s ease;
+}
+.gift-card:hover{transform:translateY(-6px);box-shadow:0 20px 60px rgba(45,120,192,.18);}
+
+/* Card header band */
+.gift-card-header{
+  padding:18px 24px;display:flex;align-items:center;gap:12px;
+}
+.gift-bdo{background:linear-gradient(135deg,#003087 0%,#0046b8 100%);}
+.gift-mari{background:linear-gradient(135deg,#e85d04 0%,#f77f00 100%);}
+
+.gift-bank-logo{
+  width:42px;height:42px;border-radius:10px;background:white;
+  display:flex;align-items:center;justify-content:center;
+  font-weight:900;font-size:.9rem;letter-spacing:-1px;
+  box-shadow:0 2px 8px rgba(0,0,0,.15);
+  flex-shrink:0;
+}
+.gift-logo-b{color:#003087;}
+.gift-logo-d{color:#003087;}
+.gift-logo-o{color:#f0a500;}
+.gift-mari-logo span{color:#e85d04;font-size:1.2rem;}
+
+.gift-bank-name{
+  font-family:'Cinzel Decorative',cursive;
+  font-size:.72rem;letter-spacing:2px;
+  color:white;font-weight:700;text-shadow:0 1px 4px rgba(0,0,0,.2);
+}
+
+/* Card body */
+.gift-card-body{padding:24px;display:flex;gap:18px;align-items:flex-start;}
+
+/* QR image wrap */
+.gift-qr-wrap{
+  position:relative;flex-shrink:0;
+  width:130px;height:130px;
+  border-radius:12px;overflow:hidden;
+  border:2px solid rgba(45,120,192,.12);
+  box-shadow:0 4px 16px rgba(0,0,0,.1);
+  cursor:pointer;
+}
+.gift-qr-img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .4s;}
+.gift-qr-wrap:hover .gift-qr-img{transform:scale(1.05);}
+.gift-qr-shine{
+  position:absolute;inset:0;
+  background:linear-gradient(135deg,rgba(255,255,255,.25) 0%,transparent 50%);
+  pointer-events:none;
+}
+.gift-scan-badge{
+  position:absolute;bottom:0;left:0;right:0;
+  background:rgba(10,31,56,.8);
+  color:white;font-size:.5rem;letter-spacing:1.5px;
+  text-transform:uppercase;font-weight:600;
+  padding:5px 0;text-align:center;
+  backdrop-filter:blur(4px);
+}
+.gift-scan-badge i{color:#c8a040;margin-right:3px;}
+
+/* Account details */
+.gift-details{flex:1;text-align:left;}
+.gift-account-name{
+  font-family:'Dancing Script',cursive;font-size:1.3rem;
+  color:#0a1f38;font-weight:700;margin-bottom:2px;
+}
+.gift-account-num{font-size:.7rem;color:#4a6080;margin-bottom:8px;letter-spacing:.5px;}
+.gift-account-num strong{color:#1d5fa3;}
+
+.gift-instapay{
+  display:flex;align-items:center;gap:5px;margin-bottom:10px;
+}
+.gift-instapay img{height:16px;object-fit:contain;}
+.gift-instapay span{font-size:.6rem;letter-spacing:2px;text-transform:uppercase;
+  color:#1d5fa3;font-weight:700;}
+
+.gift-note{
+  font-size:.62rem;color:#6a8098;line-height:1.5;margin-bottom:12px;
+}
+.gift-note i{color:#c8a040;margin-right:3px;}
+
+.gift-enlarge-btn{
+  display:inline-flex;align-items:center;gap:6px;
+  padding:8px 14px;background:linear-gradient(135deg,#0a1f38,#1d5fa3);
+  color:white;border:none;border-radius:8px;cursor:pointer;
+  font-size:.6rem;letter-spacing:1.5px;text-transform:uppercase;font-weight:700;
+  transition:transform .2s,box-shadow .2s;
+  box-shadow:0 4px 12px rgba(45,120,192,.3);
+}
+.gift-enlarge-btn:hover{transform:translateY(-2px);box-shadow:0 8px 20px rgba(45,120,192,.4);}
+
+/* Thank you note */
+.gift-thank{
+  font-family:'Cormorant Garamond',serif;font-style:italic;
+  font-size:1rem;color:#1a3a5e;opacity:.7;max-width:560px;margin:0 auto;
+}
+.gift-thank i{color:#c8a040;}
+
+/* ── QR MODAL ── */
+.gift-modal{
+  position:fixed;inset:0;z-index:10000;
+  background:rgba(4,13,26,.85);backdrop-filter:blur(12px);
+  display:flex;align-items:center;justify-content:center;
+  opacity:0;visibility:hidden;
+  transition:opacity .35s ease,visibility .35s ease;
+}
+.gift-modal.open{opacity:1;visibility:visible;}
+.gift-modal-inner{
+  background:white;border-radius:24px;
+  padding:36px 32px 28px;
+  max-width:360px;width:90%;
+  text-align:center;
+  position:relative;
+  box-shadow:0 40px 100px rgba(0,0,0,.5);
+  animation:modalPop .4s cubic-bezier(.34,1.56,.64,1);
+}
+@keyframes modalPop{from{transform:scale(.75);opacity:0;}to{transform:scale(1);opacity:1;}}
+.gift-modal-close{
+  position:absolute;top:14px;right:16px;
+  background:none;border:none;font-size:1.1rem;
+  color:#8a9bb0;cursor:pointer;
+  transition:color .2s,transform .2s;
+}
+.gift-modal-close:hover{color:#0a1f38;transform:scale(1.2);}
+.gift-modal-title{
+  font-family:'Dancing Script',cursive;font-size:1.4rem;
+  color:#0a1f38;font-weight:700;margin-bottom:20px;
+}
+.gift-modal-qr{
+  width:100%;max-width:280px;border-radius:12px;
+  border:1px solid rgba(45,120,192,.12);
+  box-shadow:0 8px 24px rgba(0,0,0,.1);
+  margin-bottom:16px;
+}
+.gift-modal-hint{
+  font-size:.68rem;color:#6a8098;letter-spacing:.5px;margin-bottom:8px;
+}
+.gift-modal-hint i{color:#1d5fa3;margin-right:4px;}
+.gift-modal-instapay{
+  font-size:.58rem;letter-spacing:2px;text-transform:uppercase;
+  color:#aac0d4;font-weight:600;
+}
+.gift-modal-instapay strong{color:#1d5fa3;}
+
+/* Responsive */
+@media(max-width:640px){
+  .gift-cards{grid-template-columns:1fr;}
+  .gift-card-body{flex-direction:column;align-items:center;}
+  .gift-qr-wrap{width:160px;height:160px;}
+  .gift-details{text-align:center;}
+  .gift-enlarge-btn{width:100%;justify-content:center;}
+}
+</style>
+
+<script>
+function enlargeQR(imgId, title){
+  var src = document.getElementById(imgId).src;
+  document.getElementById('giftModalImg').src = src;
+  document.getElementById('giftModalTitle').textContent = title;
+  document.getElementById('giftModal').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function closeGiftModal(){
+  document.getElementById('giftModal').classList.remove('open');
+  document.body.style.overflow = '';
+}
+document.addEventListener('keydown', function(e){
+  if(e.key === 'Escape') closeGiftModal();
+});
+</script>
+
+<footer><div class="ft-bg"></div><div class="ft-content">
+  <div class="ft-orn">&#10022; &nbsp; &#10022; &nbsp; &#10022;</div>
+  <div class="ft-names">Jonah &amp; John Paul</div>
+  <div class="ft-date">June 6, 2026 &nbsp;&middot;&nbsp; Cebu City, Philippines</div>
+  <div class="ft-quote">&ldquo;And they lived happily ever after.&rdquo;</div>
+  <div class="ft-social"><a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a><a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a><a href="#" aria-label="Pinterest"><i class="fab fa-pinterest-p"></i></a><a href="#" aria-label="Email"><i class="fas fa-envelope"></i></a></div>
+  <div class="ft-tag">#JonahAndJohnPaulForever</div>
+  <div class="ft-copy">Made with <i class="fas fa-heart" style="color:#4a9fd4"></i> for our special day &copy; 2026</div>
+</div></footer>
+
+<div class="lightbox" id="lightbox">
+  <button class="lb-close" onclick="closeLightbox()"><i class="fas fa-times"></i></button>
+  <button class="lb-prev" id="lbPrev"><i class="fas fa-chevron-left"></i></button>
+  <div class="lb-wrap"><img src="" id="lightbox-img" alt=""></div>
+  <button class="lb-next" id="lbNext"><i class="fas fa-chevron-right"></i></button>
+  <div class="lb-cap" id="lbInfo"></div>
+  <div class="lb-counter" id="lbCounter">1 / 1</div>
+</div>
+<button class="scroll-top" id="scrollTop"><i class="fas fa-chevron-up"></i></button>
+
+</div><!-- /#main-site -->
+
+<!-- Scripts -->
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-storage-compat.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/canvas-confetti/1.9.0/confetti.browser.min.js"></script>
+<script src="assets/js/shared.js"></script>
+<script src="assets/js/main.js"></script>
+
+<!-- ══ INVITATION LOGIC ══════════════════════════════════════════════════ -->
+<script>
+/* Build stars */
+(function(){var c=document.getElementById('inv-stars');for(var i=0;i<60;i++){var s=document.createElement('div');s.className='inv-star';var sz=.8+Math.random()*2;s.style.cssText='left:'+Math.random()*100+'%;top:'+Math.random()*100+'%;width:'+sz+'px;height:'+sz+'px;animation-duration:'+(2+Math.random()*4)+'s;animation-delay:'+Math.random()*6+'s;';c.appendChild(s);}})();
+/* Petals */
+(function(){var c=document.getElementById('inv-petals');var cols=['rgba(126,192,224,.55)','rgba(45,120,192,.45)','rgba(180,216,238,.55)','rgba(74,159,212,.45)','rgba(200,160,64,.2)'];for(var i=0;i<22;i++){var p=document.createElement('div');p.className='inv-petal';var sz=5+Math.random()*14;p.style.cssText='left:'+Math.random()*100+'%;width:'+sz+'px;height:'+sz+'px;border-radius:'+(Math.random()>.5?'50%':'0% 100% 0% 100%')+';background:'+cols[Math.floor(Math.random()*cols.length)]+';animation-duration:'+(9+Math.random()*13)+'s;animation-delay:'+Math.random()*16+'s;animation-name:petalFall;';c.appendChild(p);}})();
+/* Gold specks */
+(function(){var c=document.getElementById('inv-specks');for(var i=0;i<22;i++){var s=document.createElement('div');s.className='inv-speck';var sz=1.5+Math.random()*3;s.style.cssText='left:'+(5+Math.random()*90)+'%;top:'+(10+Math.random()*80)+'%;width:'+sz+'px;height:'+sz+'px;animation-duration:'+(5+Math.random()*8)+'s;animation-delay:'+Math.random()*10+'s;';c.appendChild(s);}})();
+
+setTimeout(function(){document.getElementById('ctaWrap').classList.add('show');document.getElementById('envWrapper').classList.add('idle');},2000);
+document.getElementById('envWrapper').addEventListener('click',openEnvelope);
+
+/* ── THE ONLY AUDIO ELEMENT ── */
+var bgMusic=document.getElementById('bgMusic');
+var musicPlaying=false;
+
+function startMusic(){
+  if(musicPlaying)return;
+  bgMusic.volume=0;
+  var p=bgMusic.play();
+  if(p!==undefined){
+    p.then(function(){
+      musicPlaying=true;
+      var v=0;
+      var fade=setInterval(function(){ v=Math.min(+(v+0.025).toFixed(3),.38); bgMusic.volume=v; if(v>=.38)clearInterval(fade); },90);
+      setTimeout(function(){document.getElementById('inv-music-pill').classList.add('show');},400);
+      spawnNotes();
+    }).catch(function(){});
+  }
+}
+
+function spawnNotes(){
+  var c=document.getElementById('inv-notes');var notes=['♪','♫','♩','♬'];
+  for(var i=0;i<10;i++){(function(i){setTimeout(function(){var n=document.createElement('div');n.className='inv-mnote';n.textContent=notes[Math.floor(Math.random()*4)];n.style.cssText='left:'+(15+Math.random()*70)+'%;top:'+(25+Math.random()*45)+'%;font-size:'+(0.9+Math.random()*.9)+'rem;animation-duration:'+(2.5+Math.random()*2)+'s;animation-delay:'+Math.random()*.2+'s;';c.appendChild(n);setTimeout(function(){n.remove();},5000);},i*200);})(i);}
+}
+
+function burstConf(){
+  var w=document.getElementById('envWrapper');var cols=['#4a9fd4','#7ec0e0','#c8a040','#e6cc78','#b4d8ee','#ffffff','#2d78c0'];
+  for(var i=0;i<35;i++){var el=document.createElement('div');el.className='conf-p';var ang=(Math.random()*360)*Math.PI/180;var dist=80+Math.random()*160;var dx=Math.cos(ang)*dist;var dy=Math.sin(ang)*dist-70;var rot=Math.random()*720-360;el.style.cssText='left:calc(50% - 3px);top:50%;width:'+(4+Math.random()*6)+'px;height:'+(4+Math.random()*8)+'px;background:'+cols[Math.floor(Math.random()*cols.length)]+';border-radius:'+(Math.random()>.5?'50%':'2px')+';--ep:translate('+dx+'px,'+dy+'px);--rot:'+rot+'deg;animation:confFly '+(0.8+Math.random()*.7)+'s '+(Math.random()*.3)+'s ease-out forwards;';w.appendChild(el);setTimeout(function(){el.remove();},2500);}
+}
+
+var envOpened=false;
+function openEnvelope(){
+  if(envOpened)return; envOpened=true;
+  startMusic();
+  var rip=document.createElement('div');rip.className='ripple-c';var w=document.getElementById('envWrapper');rip.style.cssText='left:50%;top:55%;transform:translate(-50%,-50%)';w.appendChild(rip);setTimeout(function(){rip.remove();},900);
+  var cta=document.getElementById('ctaWrap');cta.style.opacity='0';cta.style.pointerEvents='none';w.style.animation='none';
+  setTimeout(function(){document.getElementById('sealGroup').classList.add('hide');document.getElementById('stampGroup').classList.add('hide');document.getElementById('clickHint').style.opacity='0';},150);
+  setTimeout(function(){document.getElementById('envLight').classList.add('glow');},350);
+  setTimeout(function(){document.getElementById('envFlap').classList.add('open');},380);
+  setTimeout(function(){document.getElementById('letterWrap').classList.add('rise');burstConf();},1050);
+  setTimeout(function(){document.getElementById('enterWrap').classList.add('show');},2300);
+}
+
+/* ── enterSite: hide overlay, show main — zero audio interruption ── */
+function enterSite(){
+  document.getElementById('invite-overlay').classList.add('hidden');
+  var main=document.getElementById('main-site');
+  main.style.visibility='visible';
+
+  /* Wire the music pill toggle to the same bgMusic element */
+  var btn=document.getElementById('musicToggle');
+  var ico=document.getElementById('musicIcon');
+  if(btn){
+    if(musicPlaying) ico.className='fas fa-pause';
+    btn.addEventListener('click',function(){
+      if(!musicPlaying){
+        startMusic(); ico.className='fas fa-pause';
+        if(window.showToast) showToast('♪ Playing our love song&hellip;');
+      } else {
+        var v=bgMusic.volume;
+        var fade=setInterval(function(){ v=Math.max(parseFloat((v-.04).toFixed(2)),0); bgMusic.volume=v; if(v<=0){clearInterval(fade);bgMusic.pause();musicPlaying=false;ico.className='fas fa-music';} },60);
+      }
+    });
+  }
+  initMainSite();
+}
+
+document.addEventListener('keydown',function(e){
+  if(e.key==='Enter'&&!envOpened)openEnvelope();
+  else if(e.key==='Enter'&&envOpened)enterSite();
+});
+</script>
+
+<!-- ══ MAIN SITE INIT (runs after overlay is dismissed) ═════════════════ -->
+<script>
+function initMainSite(){
+  if(typeof AOS!=='undefined') AOS.init({duration:850,once:true,offset:70,easing:'ease-out-cubic'});
+  /* Loader */
+  (function(){var l=document.getElementById('loader');var b=document.getElementById('loaderProgress');var p=0;document.body.style.overflow='hidden';var t=setInterval(function(){p+=Math.random()*18;if(p>=100){p=100;clearInterval(t);setTimeout(function(){l.classList.add('hidden');document.body.style.overflow='';},400);}b.style.width=p+'%';},120);})();
+  /* Petals */
+  if(typeof spawnPetals==='function') spawnPetals('petals',20);
+  /* Heart canvas */
+  (function(){var cv=document.getElementById('heartCanvas');if(!cv)return;var ctx=cv.getContext('2d');var rsz=function(){cv.width=cv.offsetWidth;cv.height=cv.offsetHeight;};rsz();window.addEventListener('resize',rsz);var hs=Array.from({length:14},function(){return{x:Math.random()*1200,y:Math.random()*800,size:15+Math.random()*35,speed:.2+Math.random()*.4,drift:(Math.random()-.5)*.6,opacity:.04+Math.random()*.06,color:['#2d78c0','#7ec0e0','#4a9fd4','#b4d8ee'][Math.floor(Math.random()*4)]};});function draw(){ctx.clearRect(0,0,cv.width,cv.height);hs.forEach(function(h){ctx.save();ctx.globalAlpha=h.opacity;ctx.fillStyle=h.color;ctx.beginPath();ctx.moveTo(h.x,h.y-h.size*.3);ctx.bezierCurveTo(h.x+h.size*.5,h.y-h.size*.8,h.x+h.size,h.y+h.size*.2,h.x,h.y+h.size*.7);ctx.bezierCurveTo(h.x-h.size,h.y+h.size*.2,h.x-h.size*.5,h.y-h.size*.8,h.x,h.y-h.size*.3);ctx.closePath();ctx.fill();ctx.restore();h.y-=h.speed;h.x+=h.drift;if(h.y<-h.size*2){h.y=cv.height+h.size;h.x=Math.random()*cv.width;}});requestAnimationFrame(draw);}draw();})();
+  /* Navbar */
+  (function(){var nav=document.getElementById('navbar');var ham=document.getElementById('hamburger');var menu=document.getElementById('mobileMenu');var top=document.getElementById('scrollTop');window.addEventListener('scroll',function(){nav.classList.toggle('scrolled',scrollY>60);top.classList.toggle('visible',scrollY>500);});ham.addEventListener('click',function(){ham.classList.toggle('open');menu.classList.toggle('open');});document.querySelectorAll('.mobile-link').forEach(function(l){l.addEventListener('click',function(){ham.classList.remove('open');menu.classList.remove('open');});});top.addEventListener('click',function(){window.scrollTo({top:0,behavior:'smooth'});});})();
+  /* Cursor */
+  (function(){var c=document.getElementById('cursor');var f=document.getElementById('cursorFollower');var mx=0,my=0,fx=0,fy=0;document.addEventListener('mousemove',function(e){mx=e.clientX;my=e.clientY;c.style.left=mx+'px';c.style.top=my+'px';});(function loop(){fx+=(mx-fx)*.12;fy+=(my-fy)*.12;f.style.left=fx+'px';f.style.top=fy+'px';requestAnimationFrame(loop);})();})();
+  /* Scroll bar */
+  window.addEventListener('scroll',function(){var bar=document.getElementById('scroll-bar');if(bar)bar.style.width=(scrollY/(document.documentElement.scrollHeight-innerHeight)*100)+'%';});
+  /* Ticker */
+  (function(){var t=document.getElementById('bannerTicker');if(t)t.innerHTML+=t.innerHTML;})();
+  /* Countdown */
+  (function(){var target=new Date('June 6, 2026 14:00:00').getTime();var pad=function(n){return String(n).padStart(2,'0');};function tick(){var d=target-Date.now();if(d<=0){document.getElementById('countdown').innerHTML='<div style="font-family:\'Cinzel Decorative\',cursive;color:var(--sky);font-size:1.3rem">&#127881; Today is the day!</div>';return;}document.getElementById('days').textContent=pad(Math.floor(d/86400000));document.getElementById('hours').textContent=pad(Math.floor((d%86400000)/3600000));document.getElementById('mins').textContent=pad(Math.floor((d%3600000)/60000));document.getElementById('secs').textContent=pad(Math.floor((d%60000)/1000));}tick();setInterval(tick,1000);})();
+  /* Add to Cal */
+  document.getElementById('addToCalBtn')?.addEventListener('click',function(e){e.preventDefault();window.open('https://www.google.com/calendar/render?action=TEMPLATE&text='+encodeURIComponent('Jonah & John Paul Wedding')+'&dates=20260606T140000/20260606T200000&location='+encodeURIComponent('Church of Mary Coredemptrix, Purok 4 Brgy. San Jose, 6000 Cebu City'),'_blank');if(window.showToast)showToast('&#128197; Opening Google Calendar&hellip;');});
+  /* Bridal tabs */
+  document.querySelectorAll('.b-tab').forEach(function(tab){tab.addEventListener('click',function(){document.querySelectorAll('.b-tab').forEach(function(t){t.classList.remove('active');});tab.classList.add('active');document.querySelectorAll('.b-grid').forEach(function(g){g.classList.toggle('hidden',g.id!==tab.dataset.tab);});});});
+  /* Gallery tabs */
+  document.querySelectorAll('.g-tab').forEach(function(btn){btn.addEventListener('click',function(){document.querySelectorAll('.g-tab').forEach(function(b){b.classList.remove('active');});btn.classList.add('active');if(window.renderMainGallery)renderMainGallery(btn.dataset.gtab);});});
+  /* GSAP */
+  if(typeof gsap!=='undefined'){gsap.from('.hero-name:first-child',{opacity:0,x:-60,duration:1.2,delay:.5,ease:'power3.out'});gsap.from('.hero-name:last-child',{opacity:0,x:60,duration:1.2,delay:.5,ease:'power3.out'});gsap.from('.countdown',{opacity:0,y:30,duration:1,delay:1.6,ease:'power2.out'});gsap.from('.hero-cta',{opacity:0,y:20,scale:.9,duration:1,delay:1.9,ease:'back.out(1.4)'});}
+}
+</script>
+
+<!-- ══ FIREBASE + RSVP + WISHES + GALLERY ═══════════════════════════════ -->
+<script>
+window.showToast=function(msg){var t=document.getElementById('globalToast');if(!t){t=document.createElement('div');t.id='globalToast';t.style.cssText='position:fixed;bottom:28px;right:28px;padding:14px 26px;border-radius:14px;font-family:Raleway,sans-serif;font-size:.85rem;font-weight:600;display:flex;align-items:center;gap:10px;transform:translateY(120px);opacity:0;transition:all .42s cubic-bezier(.175,.885,.32,1.275);z-index:99999;pointer-events:none;box-shadow:0 10px 40px rgba(0,0,0,.18);white-space:nowrap';document.body.appendChild(t);}t.style.background='linear-gradient(135deg,#1a3a5e,#2d78c0)';t.style.color='white';t.innerHTML='<i class="fas fa-heart"></i><span>'+msg+'</span>';t.style.transform='translateY(0)';t.style.opacity='1';clearTimeout(window._tt);window._tt=setTimeout(function(){t.style.transform='translateY(120px)';t.style.opacity='0';},3800);};
+
+FS.photos().orderBy('uploadedAt','desc').onSnapshot(function(snap){window.weddingPhotos=snap.docs.map(function(d){return Object.assign({id:d.id},d.data());});if(window.renderMainGallery)renderMainGallery(document.querySelector('.g-tab.active')?.dataset.gtab||'all');},function(err){console.error('Gallery:',err);});
+
+FS.wishes().orderBy('createdAt','desc').limit(50).onSnapshot(function(snap){var wall=document.getElementById('wishesWall');if(!snap.docs.length){wall.innerHTML='<p style="text-align:center;color:var(--text-3);font-style:italic;padding:32px">Be the first to leave a wish &#9825;</p>';return;}wall.innerHTML=snap.docs.map(function(doc){var w=doc.data();var name=escHtml(w.name||'Anonymous');var text=escHtml(w.text||'');var time=w.createdAt&&w.createdAt.toDate?w.createdAt.toDate().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'}):'Just now';return'<div class="wish-card"><div class="wish-av">'+name.charAt(0).toUpperCase()+'</div><div class="wish-body"><div class="wish-author">'+name+' <i class="fas fa-heart wish-hrt"></i></div><p>'+text+'</p><span class="wish-time">'+time+'</span></div></div>';}).join('');},function(err){console.error('Wishes:',err);});
+
+window.submitWish=async function(){var name=document.getElementById('wishName').value.trim();var text=document.getElementById('wishText').value.trim();if(!name||!text){showToast('Please enter your name and message &#9825;');return;}var btn=document.getElementById('wishBtn');btn.disabled=true;try{await FS.wishes().add({name:name,text:text,createdAt:firebase.firestore.FieldValue.serverTimestamp()});document.getElementById('wishName').value='';document.getElementById('wishText').value='';showToast('&#9825; Your wish has been sent!');}catch(e){showToast('Oops! Try again &#9825;');console.error(e);}finally{btn.disabled=false;}};
+
+window.submitRSVP=async function(){var fname=document.getElementById('fname').value.trim();var att=document.getElementById('attendance').value;if(!fname){showToast('Please enter your name &#9825;');return;}if(!att){showToast('Please select attendance &#9825;');return;}var btn=document.getElementById('rsvpBtn');btn.disabled=true;btn.innerHTML='<i class="fas fa-spinner fa-spin"></i>&nbsp; Sending&hellip;';try{await FS.rsvps().add({fname:fname,lname:document.getElementById('lname').value.trim(),email:document.getElementById('email').value.trim(),phone:document.getElementById('phone').value.trim(),attendance:att,guests:document.getElementById('guests').value,message:document.getElementById('message').value.trim(),createdAt:firebase.firestore.FieldValue.serverTimestamp()});if(att.includes('Accepts')&&typeof confetti!=='undefined'){var end=Date.now()+3200;var cols=['#4a9fd4','#7ec0e0','#c8a040','#b4d8ee','#ffffff'];(function burst(){confetti({particleCount:5,angle:60,spread:55,origin:{x:0},colors:cols});confetti({particleCount:5,angle:120,spread:55,origin:{x:1},colors:cols});if(Date.now()<end)requestAnimationFrame(burst);})();}document.getElementById('rsvp-form-content').style.display='none';document.getElementById('rsvp-success').style.display='block';document.getElementById('rsvp-success-msg').textContent='Thank you, '+fname+'! We can\'t wait to celebrate with you on June 6th. ♡';showToast('&#9825; See you there, '+fname+'!');}catch(e){showToast('Oops! Could not save. Try again &#9825;');btn.disabled=false;btn.innerHTML='<i class="fas fa-heart"></i>&nbsp; Send My RSVP';console.error(e);}};
+
+window.weddingPhotos=[
+  {url:"assets/images/story-1.png", type:"couple", category:"memories",  caption:"Couple since August 06, 2015 ♡"},
+  {url:"assets/images/story-2.png", type:"couple", category:"proposal",  caption:"Got engaged, August 06, 2025 ♡"},
+  {url:"assets/images/story-3.png", type:"couple", category:"wedding",   caption:"Welcome to the Wedding of Jonah & John Paul"},
+  {url:"assets/images/story-5.png", type:"couple", category:"memories",  caption:"When the time is right, I, the Lord will make it happen — Isaiah 60:22"},
+  {url:"assets/images/story-7.png", type:"couple", category:"memories",  caption:"Jonah P. Carmelotes — The Bride"},
+  {url:"assets/images/story-8.png", type:"couple", category:"memories",  caption:"John Paul A. Martinez — The Groom"},
+  {url:"assets/images/story-9.png", type:"couple", category:"memories",  caption:"How We Met · In 2015"},
+  {url:"assets/images/story-10.png",type:"couple", category:"memories",  caption:"Talamban National High School · Where it all began"}
+];
+
+/* Image fallback */
+(function(){function applyFb(img){img.style.display='none';var item=img.closest('.g-item');if(!item||item.querySelector('.img-ph'))return;var ph=document.createElement('div');ph.className='img-ph';ph.innerHTML='<div class="img-ph-icon">♡</div><div class="img-ph-names">Jonah<br>&amp; John Paul</div><div class="img-ph-label">Photo Coming Soon</div>';item.appendChild(ph);}function wire(){document.querySelectorAll('.g-item img').forEach(function(img){img.onerror=function(){applyFb(this);};if(img.complete&&(!img.naturalWidth||img.naturalWidth===0))applyFb(img);});}wire();var g=document.getElementById('mainGalleryGrid');if(g){var obs=new MutationObserver(function(){wire();});obs.observe(g,{childList:true,subtree:true});}})();
+</script>
+</body>
+</html>

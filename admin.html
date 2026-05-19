@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin — Jonah & John Paul Gallery</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700&family=Raleway:wght@300;400;500;600&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="assets/css/admin.css">
+</head>
+<body>
+
+  <!-- LOGIN SCREEN -->
+  <div id="loginScreen">
+    <div class="login-box">
+      <div class="login-hearts"><span>♡</span><span>♡</span><span>♡</span></div>
+      <div class="login-title">Admin Access</div>
+      <div class="login-sub">Jonah & John Paul Gallery</div>
+      <label class="login-label" for="loginPass">Password</label>
+      <input type="password" id="loginPass" class="login-input" placeholder="••••••••••"
+             onkeydown="if(event.key==='Enter')doLogin()">
+      <button class="login-btn" onclick="doLogin()"><i class="fas fa-heart"></i> Enter Dashboard</button>
+      <div class="login-error" id="loginError">Incorrect password. Please try again.</div>
+    </div>
+  </div>
+
+  <!-- DASHBOARD -->
+  <div id="dashboard">
+    <div class="admin-bar">
+      <div class="admin-bar-logo">J & M — Admin</div>
+      <div class="admin-bar-right">
+        <span class="admin-tag">Gallery Manager</span>
+        <a href="main.html" class="view-site-btn" target="_blank"><i class="fas fa-eye"></i> View Site</a>
+        <a href="guest-upload.html" class="view-site-btn" target="_blank"><i class="fas fa-qrcode"></i> Guest Page</a>
+        <button class="logout-btn" onclick="logout()">Logout</button>
+      </div>
+    </div>
+
+    <div class="dash-body">
+
+      <!-- Stats -->
+      <div class="stats-row">
+        <div class="stat-card"><span class="stat-num" id="statCouple">—</span><div class="stat-label">Couple Photos</div></div>
+        <div class="stat-card"><span class="stat-num" id="statGuest">—</span><div class="stat-label">Guest Photos</div></div>
+        <div class="stat-card"><span class="stat-num" id="statTotal">—</span><div class="stat-label">Total Photos</div></div>
+        <div class="stat-card"><span class="stat-num" id="statRSVP">—</span><div class="stat-label">RSVPs</div></div>
+      </div>
+
+      <!-- Tabs -->
+      <div class="dash-tabs">
+        <button class="dash-tab active" onclick="switchTab('upload')">Upload</button>
+        <button class="dash-tab" onclick="switchTab('manage')">Manage Gallery</button>
+        <button class="dash-tab" onclick="switchTab('guests')">Guest Submissions</button>
+        <button class="dash-tab" onclick="switchTab('rsvps')">RSVPs</button>
+      </div>
+
+      <!-- TAB: UPLOAD -->
+      <div class="tab-panel active" id="tab-upload">
+        <div class="dash-section">
+          <div class="dash-section-header">
+            <div>
+              <div class="dash-section-title">Upload Couple Photos</div>
+              <div class="dash-section-sub">These appear in the "Our Memories" gallery section</div>
+            </div>
+          </div>
+          <div class="admin-upload-card">
+            <!-- Caption -->
+            <label class="field-label">Caption</label>
+            <input type="text" class="admin-input" id="adminCaption" placeholder="e.g. Pre-nup shoot at Batangas...">
+
+            <!-- Category pills -->
+            <label class="field-label">Category</label>
+            <div class="cat-pills">
+              <button class="cat-pill active" data-cat="memories">💕 Memories</button>
+              <button class="cat-pill" data-cat="prenup">📸 Pre-Nup</button>
+              <button class="cat-pill" data-cat="proposal">💍 Proposal</button>
+              <button class="cat-pill" data-cat="travels">✈️ Travels</button>
+              <button class="cat-pill" data-cat="everyday">💛 Everyday</button>
+              <button class="cat-pill" data-cat="wedding">🌸 Wedding</button>
+            </div>
+
+            <!-- Drop zone -->
+            <div class="admin-drop-zone" id="adminDropZone">
+              <input type="file" id="adminPhotoInput" multiple accept="image/*">
+              <div class="admin-drop-icon"><i class="fas fa-images"></i></div>
+              <h3>Drop Photos Here</h3>
+              <p>JPG, PNG, HEIC · Multiple files at once</p>
+              <button class="admin-drop-btn" onclick="document.getElementById('adminPhotoInput').click();event.stopPropagation()">
+                <i class="fas fa-folder-open"></i> Browse Photos
+              </button>
+            </div>
+
+            <!-- Preview -->
+            <div id="adminPreviewWrap" style="display:none;margin-bottom:20px">
+              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+                <span style="font-size:.75rem;letter-spacing:2px;text-transform:uppercase;color:var(--pink-soft);font-weight:700" id="adminPreviewCount"></span>
+                <button class="clear-files-btn" onclick="clearAdminFiles()"><i class="fas fa-times"></i> Clear</button>
+              </div>
+              <div class="admin-preview-grid" id="adminPreviewGrid"></div>
+            </div>
+
+            <!-- Progress -->
+            <div class="admin-upload-progress" id="adminProgressWrap">
+              <div class="admin-progress-bar-outer"><div class="admin-progress-bar" id="adminProgressBar"></div></div>
+              <div class="admin-progress-text" id="adminProgressText">Uploading...</div>
+            </div>
+
+            <div class="admin-upload-actions">
+              <button class="upload-photos-btn" id="uploadBtn" onclick="uploadCouplePhotos()">
+                <i class="fas fa-cloud-upload-alt"></i> Upload to Gallery
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB: MANAGE -->
+      <div class="tab-panel" id="tab-manage">
+        <div class="dash-section">
+          <div class="dash-section-header">
+            <div>
+              <div class="dash-section-title">Couple's Gallery</div>
+              <div class="dash-section-sub">All uploaded couple photos. Click Remove to delete permanently.</div>
+            </div>
+          </div>
+          <div class="manage-grid" id="manageGrid">
+            <div class="loading-state"><i class="fas fa-spinner fa-spin"></i> Loading photos...</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB: GUESTS -->
+      <div class="tab-panel" id="tab-guests">
+        <div class="dash-section">
+          <div class="dash-section-header">
+            <div>
+              <div class="dash-section-title">Guest Submissions</div>
+              <div class="dash-section-sub">Photos uploaded by guests. Remove to hide from the gallery.</div>
+            </div>
+          </div>
+          <div class="manage-grid" id="guestGrid">
+            <div class="loading-state"><i class="fas fa-spinner fa-spin"></i> Loading submissions...</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB: RSVPs -->
+      <div class="tab-panel" id="tab-rsvps">
+        <div class="dash-section">
+          <div class="dash-section-header">
+            <div>
+              <div class="dash-section-title">RSVP Responses</div>
+              <div class="dash-section-sub">All guest RSVP submissions.</div>
+            </div>
+          </div>
+          <div class="rsvp-table-wrap">
+            <table class="rsvp-table">
+              <thead>
+                <tr>
+                  <th>Name</th>
+                  <th>Email</th>
+                  <th>Phone</th>
+                  <th>Attendance</th>
+                  <th>Guests</th>
+                  <th>Meal</th>
+                  <th>Message</th>
+                </tr>
+              </thead>
+              <tbody id="rsvpTableBody">
+                <tr><td colspan="7" class="loading-state"><i class="fas fa-spinner fa-spin"></i> Loading RSVPs...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Firebase compat SDK -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-storage-compat.js"></script>
+
+  <!-- Shared utilities -->
+  <script src="assets/js/shared.js"></script>
+
+  <script>
+    /* ════════════════════════════════════════════════
+       ADMIN PASSWORD
+       Store this securely — do NOT expose in shared.js.
+       For production, replace with Firebase Auth.
+    ════════════════════════════════════════════════ */
+    const ADMIN_PASSWORD = 'JohnMary2026';
+
+    /* ── AUTH ── */
+    let authed = false;
+
+    function doLogin() {
+      const pw = document.getElementById('loginPass').value;
+      if (pw === ADMIN_PASSWORD) {
+        authed = true;
+        document.getElementById('loginScreen').classList.add('hidden');
+        document.getElementById('dashboard').classList.add('show');
+        startListeners();
+      } else {
+        document.getElementById('loginError').style.display = 'block';
+        const input = document.getElementById('loginPass');
+        input.style.borderColor = '#ff6b9d';
+        setTimeout(() => { input.style.borderColor = ''; }, 1500);
+      }
+    }
+
+    function logout() {
+      authed = false;
+      document.getElementById('loginPass').value = '';
+      document.getElementById('loginScreen').classList.remove('hidden');
+      document.getElementById('dashboard').classList.remove('show');
+    }
+
+    /* ── TABS ── */
+    const tabNames = ['upload','manage','guests','rsvps'];
+    function switchTab(name) {
+      document.querySelectorAll('.dash-tab').forEach((t, i) =>
+        t.classList.toggle('active', tabNames[i] === name)
+      );
+      document.querySelectorAll('.tab-panel').forEach(p =>
+        p.classList.toggle('active', p.id === 'tab-' + name)
+      );
+    }
+
+    /* ── CATEGORY PILLS ── */
+    let selectedCat = 'memories';
+    document.querySelectorAll('.cat-pill').forEach(pill => {
+      pill.addEventListener('click', () => {
+        document.querySelectorAll('.cat-pill').forEach(p => p.classList.remove('active'));
+        pill.classList.add('active');
+        selectedCat = pill.dataset.cat;
+      });
+    });
+
+    /* ── ADMIN FILE SELECTION ── */
+    let adminFiles = [];
+    const adminDropZone   = document.getElementById('adminDropZone');
+    const adminPhotoInput = document.getElementById('adminPhotoInput');
+
+    adminPhotoInput.addEventListener('change', e => addAdminFiles(Array.from(e.target.files)));
+    adminDropZone.addEventListener('dragover',  e => { e.preventDefault(); adminDropZone.classList.add('drag-over'); });
+    adminDropZone.addEventListener('dragleave', () => adminDropZone.classList.remove('drag-over'));
+    adminDropZone.addEventListener('drop', e => {
+      e.preventDefault(); adminDropZone.classList.remove('drag-over');
+      addAdminFiles(Array.from(e.dataTransfer.files).filter(f => f.type.startsWith('image/')));
+    });
+
+    function addAdminFiles(files) {
+      files.forEach(f => adminFiles.push(f));
+      renderAdminPreview();
+    }
+
+    function renderAdminPreview() {
+      const wrap  = document.getElementById('adminPreviewWrap');
+      const grid  = document.getElementById('adminPreviewGrid');
+      const count = document.getElementById('adminPreviewCount');
+      if (!adminFiles.length) { wrap.style.display = 'none'; return; }
+      wrap.style.display = 'block';
+      count.textContent = `${adminFiles.length} photo${adminFiles.length > 1 ? 's' : ''} selected`;
+      grid.innerHTML = '';
+      adminFiles.forEach((f, i) => {
+        const reader = new FileReader();
+        reader.onload = ev => {
+          const el = document.createElement('div');
+          el.className = 'admin-thumb';
+          el.innerHTML = `<img src="${ev.target.result}" alt=""><button class="rm" onclick="removeAdminFile(${i})"><i class="fas fa-times"></i></button>`;
+          grid.appendChild(el);
+        };
+        reader.readAsDataURL(f);
+      });
+    }
+
+    function removeAdminFile(i) { adminFiles.splice(i, 1); renderAdminPreview(); }
+    function clearAdminFiles()  { adminFiles = []; document.getElementById('adminPhotoInput').value = ''; renderAdminPreview(); }
+
+    /* ── UPLOAD COUPLE PHOTOS ── */
+    async function uploadCouplePhotos() {
+      if (!adminFiles.length) { showToast('Please select photos to upload ♡'); return; }
+
+      const caption   = document.getElementById('adminCaption').value.trim();
+      const uploadBtn = document.getElementById('uploadBtn');
+      const progressWrap = document.getElementById('adminProgressWrap');
+      const progressBar  = document.getElementById('adminProgressBar');
+      const progressText = document.getElementById('adminProgressText');
+
+      uploadBtn.disabled = true;
+      progressWrap.classList.add('show');
+
+      const total = adminFiles.length;
+      let done = 0;
+
+      for (const file of adminFiles) {
+        try {
+          const fileName   = `${Date.now()}_${file.name.replace(/[^a-zA-Z0-9._-]/g,'_')}`;
+          const storageRef = window.storage.ref(`couple-photos/${fileName}`);
+
+          await new Promise((resolve, reject) => {
+            storageRef.put(file).on('state_changed',
+              snap => {
+                const overall = ((done + snap.bytesTransferred / snap.totalBytes) / total) * 100;
+                progressBar.style.width = overall.toFixed(1) + '%';
+                progressText.textContent = `Uploading ${done + 1} of ${total}...`;
+              },
+              reject,
+              resolve
+            );
+          });
+
+          const url = await storageRef.getDownloadURL();
+          await FS.photos().add({
+            url,
+            type:        'couple',
+            caption,
+            category:    selectedCat,
+            storagePath: `couple-photos/${fileName}`,
+            uploadedAt:  firebase.firestore.FieldValue.serverTimestamp()
+          });
+
+          done++;
+          progressBar.style.width = ((done / total) * 100).toFixed(1) + '%';
+          progressText.textContent = `${done} of ${total} uploaded`;
+        } catch (err) {
+          console.error('Upload error:', err);
+          showToast(`Failed to upload ${file.name}`);
+          done++;
+        }
+      }
+
+      progressWrap.classList.remove('show');
+      progressBar.style.width = '0%';
+      showToast(`♡ ${done} photo${done > 1 ? 's' : ''} added to gallery!`, 'gold');
+      clearAdminFiles();
+      document.getElementById('adminCaption').value = '';
+      uploadBtn.disabled = false;
+    }
+
+    /* ── LIVE STATS & GRID LISTENERS ── */
+    let coupleCount = 0, guestCount = 0;
+
+    function startListeners() {
+      // Photos listener
+      FS.photos().orderBy('uploadedAt', 'desc').onSnapshot(snapshot => {
+        const all = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        coupleCount = all.filter(p => p.type === 'couple').length;
+        guestCount  = all.filter(p => p.type === 'guest').length;
+        document.getElementById('statCouple').textContent = coupleCount;
+        document.getElementById('statGuest').textContent  = guestCount;
+        document.getElementById('statTotal').textContent  = coupleCount + guestCount;
+
+        // Refresh visible tab
+        if (document.getElementById('tab-manage').classList.contains('active')) renderManageGrid(all);
+        if (document.getElementById('tab-guests').classList.contains('active')) renderGuestGrid(all);
+
+        // Store for tab switching
+        window._allPhotos = all;
+      });
+
+      // RSVPs listener
+      FS.rsvps().orderBy('createdAt', 'desc').onSnapshot(snapshot => {
+        document.getElementById('statRSVP').textContent = snapshot.size;
+        if (document.getElementById('tab-rsvps').classList.contains('active')) renderRSVPs(snapshot.docs);
+        window._rsvpDocs = snapshot.docs;
+      });
+    }
+
+    /* Tab switching with data refresh */
+    const origSwitch = switchTab;
+    window.switchTab = function(name) {
+      origSwitch(name);
+      if (name === 'manage') renderManageGrid(window._allPhotos || []);
+      if (name === 'guests') renderGuestGrid(window._allPhotos || []);
+      if (name === 'rsvps')  renderRSVPs(window._rsvpDocs || []);
+    };
+
+    /* ── MANAGE GRID ── */
+    function renderManageGrid(all) {
+      const photos = (all || []).filter(p => p.type === 'couple');
+      const grid   = document.getElementById('manageGrid');
+      if (!photos.length) {
+        grid.innerHTML = '<div class="empty-state" style="grid-column:1/-1"><i class="fas fa-heart"></i><p>No couple photos uploaded yet</p></div>';
+        return;
+      }
+      const CAT = { memories:'💕 Memories', prenup:'📸 Pre-Nup', proposal:'💍 Proposal', travels:'✈️ Travels', everyday:'💛 Everyday', wedding:'🌸 Wedding' };
+      grid.innerHTML = photos.map(p => `
+        <div class="manage-card">
+          <img src="${escHtml(p.url)}" alt="">
+          <div class="manage-card-body">
+            <div class="manage-card-meta">${CAT[p.category] || p.category || 'Memory'}</div>
+            <div class="manage-card-caption">${escHtml(p.caption || 'No caption')}</div>
+            <div class="manage-card-actions">
+              <button class="action-btn delete-btn" onclick="deletePhoto('${p.id}','${escHtml(p.storagePath||'')}')">
+                <i class="fas fa-trash"></i> Remove
+              </button>
+            </div>
+          </div>
+        </div>`).join('');
+    }
+
+    /* ── GUEST GRID ── */
+    function renderGuestGrid(all) {
+      const photos = (all || []).filter(p => p.type === 'guest');
+      const grid   = document.getElementById('guestGrid');
+      if (!photos.length) {
+        grid.innerHTML = '<div class="empty-state" style="grid-column:1/-1"><i class="fas fa-users"></i><p>No guest photos submitted yet</p></div>';
+        return;
+      }
+      grid.innerHTML = photos.map(p => `
+        <div class="guest-submission-card">
+          <img class="gsub-img" src="${escHtml(p.url)}" alt="">
+          <div class="gsub-body">
+            <div class="gsub-name"><i class="fas fa-user"></i> ${escHtml(p.guestName || 'Guest')}</div>
+            <div class="gsub-caption">${escHtml(p.caption || '')}</div>
+            <div class="gsub-time">${p.uploadedAt?.toDate ? p.uploadedAt.toDate().toLocaleDateString('en-US',{month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'}) : 'Recently'}</div>
+            <div class="gsub-actions">
+              <button class="hide-btn" onclick="deletePhoto('${p.id}','${escHtml(p.storagePath||'')}')">
+                <i class="fas fa-trash"></i> Remove
+              </button>
+            </div>
+          </div>
+        </div>`).join('');
+    }
+
+    /* ── DELETE PHOTO ── */
+    async function deletePhoto(docId, storagePath) {
+      if (!confirm('Remove this photo from the gallery?')) return;
+      try {
+        await FS.photos().doc(docId).delete();
+        if (storagePath) {
+          try { await window.storage.ref(storagePath).delete(); } catch (e) { /* may already be deleted */ }
+        }
+        showToast('Photo removed', 'gold');
+      } catch (err) {
+        showToast('Error removing photo');
+        console.error(err);
+      }
+    }
+
+    /* ── RENDER RSVPs ── */
+    function renderRSVPs(docs) {
+      const tbody = document.getElementById('rsvpTableBody');
+      if (!docs.length) {
+        tbody.innerHTML = '<tr><td colspan="7"><div class="empty-state"><i class="fas fa-envelope"></i><p>No RSVPs yet</p></div></td></tr>';
+        return;
+      }
+      tbody.innerHTML = docs.map(doc => {
+        const r = doc.data();
+        const att = r.attendance || '';
+        const attClass = att.includes('Accepts') ? 'att-accept' : 'att-decline';
+        return `<tr>
+          <td>${escHtml((r.fname || '') + ' ' + (r.lname || ''))}</td>
+          <td>${escHtml(r.email || '—')}</td>
+          <td>${escHtml(r.phone || '—')}</td>
+          <td class="${attClass}">${escHtml(att || '—')}</td>
+          <td>${escHtml(r.guests || '1')}</td>
+          <td>${escHtml(r.meal || '—')}</td>
+          <td style="max-width:200px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${escHtml(r.message || '—')}</td>
+        </tr>`;
+      }).join('');
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Share Your Photos — Jonah & John Paul</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Cinzel+Decorative:wght@400;700&family=Raleway:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="assets/css/guest-upload.css">
+</head>
+<body>
+
+  <div id="petals"></div>
+
+  <nav class="back-nav">
+    <a href="main.html" class="back-link"><i class="fas fa-arrow-left"></i> Back to Wedding Site</a>
+    <div class="nav-brand">J <span class="nav-amp">&</span> JP</div>
+    <div style="width:140px"></div>
+  </nav>
+
+  <!-- Hero -->
+  <div class="page-hero">
+    <div class="page-hero-ornament">✦ Guest Photo Sharing ✦</div>
+    <h1>Share Your <span>Photos</span></h1>
+    <p>You were part of our story too! Upload the beautiful moments you captured on our special day.</p>
+  </div>
+
+  <!-- QR Code Section -->
+  <div class="qr-section">
+    <div class="qr-inner">
+      <div class="qr-title">Scan to Open on Your Phone</div>
+      <div class="qr-sub">Share this QR code so guests can upload photos directly from their camera</div>
+      <div class="qr-box">
+        <div id="qrCode"></div>
+        <div class="qr-url" id="qrUrl"></div>
+        <button class="qr-download-btn" onclick="downloadQR()">
+          <i class="fas fa-download"></i> Download QR Code
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- How it works -->
+  <div class="how-section">
+    <div class="how-inner">
+      <div class="how-title">How It Works</div>
+      <div class="how-steps">
+        <div class="how-step"><div class="how-num">1</div><p>Enter your name so we know who shared</p></div>
+        <div class="how-arrow"><i class="fas fa-arrow-right"></i></div>
+        <div class="how-step"><div class="how-num">2</div><p>Drop or browse your photos from the day</p></div>
+        <div class="how-arrow"><i class="fas fa-arrow-right"></i></div>
+        <div class="how-step"><div class="how-num">3</div><p>Add a sweet caption (optional)</p></div>
+        <div class="how-arrow"><i class="fas fa-arrow-right"></i></div>
+        <div class="how-step"><div class="how-num">4</div><p>Hit submit — your photos join the live gallery!</p></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Upload form -->
+  <div class="upload-section">
+    <div class="upload-inner">
+
+      <div id="uploadForm">
+        <!-- Name -->
+        <div class="name-field-wrap">
+          <label><i class="fas fa-user"></i> &nbsp; Your Name</label>
+          <input type="text" id="guestName" class="name-field" placeholder="e.g. Aunt Rosa, The Santos Family, Mike & Clara...">
+        </div>
+
+        <!-- Drop zone -->
+        <div class="drop-zone" id="dropZone">
+          <input type="file" id="photoInput" multiple accept="image/*">
+          <div class="drop-icon"><i class="fas fa-cloud-upload-alt"></i></div>
+          <h2>Drop Your Photos Here</h2>
+          <p>JPG, PNG, HEIC, WebP · Multiple files welcome</p>
+          <button class="browse-btn" onclick="document.getElementById('photoInput').click();event.stopPropagation()">
+            <i class="fas fa-folder-open"></i> Browse Photos
+          </button>
+        </div>
+
+        <!-- Preview -->
+        <div class="preview-section" id="previewSection" style="display:none">
+          <div class="preview-header">
+            <span class="preview-count" id="previewCount">0 photos selected</span>
+            <button class="clear-btn" onclick="clearAll()">✕ Clear All</button>
+          </div>
+          <div class="preview-grid" id="previewGrid"></div>
+        </div>
+
+        <!-- Upload progress -->
+        <div class="upload-progress-wrap" id="uploadProgressWrap">
+          <div class="upload-progress-label"><i class="fas fa-spinner fa-spin"></i> Uploading to gallery...</div>
+          <div class="upload-progress-bar-outer">
+            <div class="upload-progress-bar" id="uploadProgressBar"></div>
+          </div>
+          <div class="upload-progress-text" id="uploadProgressText">0 of 0 photos</div>
+        </div>
+
+        <!-- Caption -->
+        <div class="caption-field-wrap">
+          <label><i class="fas fa-comment-heart"></i> &nbsp; Caption <span style="font-weight:400;opacity:.6">(optional)</span></label>
+          <textarea class="caption-field" id="captionField" placeholder="e.g. 'What a magical day! Caught this candid during the first dance 💕'"></textarea>
+        </div>
+
+        <!-- Submit -->
+        <button class="submit-btn" id="submitBtn" onclick="submitPhotos()">
+          <i class="fas fa-heart"></i> Submit My Photos
+        </button>
+      </div>
+
+      <!-- Success panel -->
+      <div class="success-panel" id="successPanel">
+        <div class="success-big-heart"><i class="fas fa-heart"></i></div>
+        <h2>Thank You!</h2>
+        <p id="successMsg">Your photos have been shared! Jonah & John Paul will love seeing the day through your eyes. ♡</p>
+        <div class="success-actions">
+          <a href="main.html" class="btn-primary"><i class="fas fa-home"></i> Back to Wedding Site</a>
+          <a href="#" class="btn-ghost" onclick="resetForm()"><i class="fas fa-plus"></i> Share More Photos</a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <footer class="page-footer">
+    <div class="page-footer-names">Jonah & John Paul</div>
+    <div class="page-footer-copy">June 6, 2026 · Rose Garden, Philippines · #JonahAndJohnPaulForever</div>
+  </footer>
+
+  <!-- Firebase compat SDK -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-storage-compat.js"></script>
+
+  <!-- QR Code library -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  <!-- Confetti -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/canvas-confetti/1.9.0/confetti.browser.min.js"></script>
+
+  <!-- Shared utilities -->
+  <script src="assets/js/shared.js"></script>
+
+  <script>
+    /* ── Petals ── */
+    spawnPetals('petals', 14);
+
+    /* ── QR Code generation ── */
+    const PAGE_URL = window.location.href.split('?')[0]; // current page URL
+    document.getElementById('qrUrl').textContent = PAGE_URL;
+
+    const qr = new QRCode(document.getElementById('qrCode'), {
+      text:          PAGE_URL,
+      width:         220,
+      height:        220,
+      colorDark:     '#c2185b',
+      colorLight:    '#fff8fb',
+      correctLevel:  QRCode.CorrectLevel.H
+    });
+
+    function downloadQR() {
+      const canvas = document.querySelector('#qrCode canvas');
+      if (!canvas) { showToast('QR code not ready yet ♡'); return; }
+      const link   = document.createElement('a');
+      link.download = 'JohnMary-GuestPhoto-QR.png';
+      link.href     = canvas.toDataURL('image/png');
+      link.click();
+      showToast('📥 QR code downloaded!');
+    }
+
+    /* ── File handling ── */
+    let selectedFiles = [];
+    const dropZone   = document.getElementById('dropZone');
+    const photoInput = document.getElementById('photoInput');
+
+    photoInput.addEventListener('change', e => addFiles(Array.from(e.target.files)));
+    dropZone.addEventListener('dragover',  e => { e.preventDefault(); dropZone.classList.add('drag-over'); });
+    dropZone.addEventListener('dragleave', ()  => dropZone.classList.remove('drag-over'));
+    dropZone.addEventListener('drop', e => {
+      e.preventDefault(); dropZone.classList.remove('drag-over');
+      addFiles(Array.from(e.dataTransfer.files).filter(f => f.type.startsWith('image/')));
+    });
+
+    function addFiles(files) {
+      files.forEach(f => selectedFiles.push(f));
+      renderPreview();
+    }
+
+    function renderPreview() {
+      const section = document.getElementById('previewSection');
+      const grid    = document.getElementById('previewGrid');
+      const count   = document.getElementById('previewCount');
+      if (!selectedFiles.length) { section.style.display = 'none'; return; }
+      section.style.display = 'block';
+      count.textContent = `${selectedFiles.length} photo${selectedFiles.length > 1 ? 's' : ''} selected`;
+      grid.innerHTML = '';
+      selectedFiles.forEach((f, i) => {
+        const reader = new FileReader();
+        reader.onload = ev => {
+          const thumb = document.createElement('div');
+          thumb.className = 'preview-thumb';
+          thumb.innerHTML = `<img src="${ev.target.result}" alt="Preview"><button class="remove-thumb" onclick="removeFile(${i})"><i class="fas fa-times"></i></button>`;
+          grid.appendChild(thumb);
+        };
+        reader.readAsDataURL(f);
+      });
+    }
+
+    function removeFile(i) { selectedFiles.splice(i, 1); renderPreview(); }
+
+    function clearAll() {
+      selectedFiles = [];
+      document.getElementById('photoInput').value = '';
+      renderPreview();
+    }
+
+    /* ── Upload to Firebase Storage + Firestore ── */
+    async function submitPhotos() {
+      const name    = document.getElementById('guestName').value.trim();
+      const caption = document.getElementById('captionField').value.trim();
+      const btn     = document.getElementById('submitBtn');
+
+      if (!name)                { showToast('Please enter your name so we know who shared! ♡'); document.getElementById('guestName').focus(); return; }
+      if (!selectedFiles.length){ showToast('Please select at least one photo to share ♡'); return; }
+
+      btn.disabled = true;
+      btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Uploading...';
+
+      // Show progress
+      const progressWrap = document.getElementById('uploadProgressWrap');
+      const progressBar  = document.getElementById('uploadProgressBar');
+      const progressText = document.getElementById('uploadProgressText');
+      progressWrap.classList.add('show');
+
+      const total  = selectedFiles.length;
+      let   done   = 0;
+      const errors = [];
+
+      for (const file of selectedFiles) {
+        try {
+          // 1. Upload file to Firebase Storage
+          const fileName  = `${Date.now()}_${file.name.replace(/[^a-zA-Z0-9._-]/g, '_')}`;
+          const storageRef = window.storage.ref(`guest-photos/${fileName}`);
+          const uploadTask = storageRef.put(file);
+
+          // Track per-file progress
+          await new Promise((resolve, reject) => {
+            uploadTask.on('state_changed',
+              snap => {
+                const filePct = (snap.bytesTransferred / snap.totalBytes) * 100;
+                const overall = ((done + filePct / 100) / total) * 100;
+                progressBar.style.width = overall.toFixed(1) + '%';
+                progressText.textContent = `Uploading photo ${done + 1} of ${total}...`;
+              },
+              reject,
+              resolve
+            );
+          });
+
+          // 2. Get the download URL
+          const url = await storageRef.getDownloadURL();
+
+          // 3. Save metadata to Firestore
+          await FS.photos().add({
+            url,
+            type:       'guest',
+            guestName:  name,
+            caption:    caption,
+            storagePath: `guest-photos/${fileName}`,
+            uploadedAt: firebase.firestore.FieldValue.serverTimestamp()
+          });
+
+          done++;
+          progressBar.style.width = ((done / total) * 100).toFixed(1) + '%';
+          progressText.textContent = `${done} of ${total} photos uploaded`;
+
+        } catch (err) {
+          console.error('Upload error:', err);
+          errors.push(file.name);
+          done++;
+        }
+      }
+
+      progressWrap.classList.remove('show');
+
+      if (done - errors.length > 0) {
+        // Show success
+        document.getElementById('uploadForm').style.display = 'none';
+        const panel = document.getElementById('successPanel');
+        panel.classList.add('show');
+        const uploaded = done - errors.length;
+        document.getElementById('successMsg').textContent =
+          `${uploaded} photo${uploaded > 1 ? 's' : ''} shared by ${name}! Jonah & John Paul will love seeing the day through your eyes. ♡`;
+
+        if (typeof confetti !== 'undefined') {
+          confetti({ particleCount: 80, spread: 70, origin: { y: 0.6 }, colors: ['#2e6da4','#8fb8d4','#d4af7a','#fce4ec'] });
+        }
+      } else {
+        showToast('Upload failed. Please check your connection and try again ♡');
+        btn.disabled = false;
+        btn.innerHTML = '<i class="fas fa-heart"></i> Submit My Photos';
+      }
+
+      if (errors.length) {
+        showToast(`${errors.length} file(s) failed to upload`);
+      }
+    }
+
+    function resetForm() {
+      selectedFiles = [];
+      document.getElementById('guestName').value  = '';
+      document.getElementById('captionField').value = '';
+      document.getElementById('photoInput').value = '';
+      renderPreview();
+      document.getElementById('uploadForm').style.display = 'block';
+      document.getElementById('successPanel').classList.remove('show');
+      const btn = document.getElementById('submitBtn');
+      btn.disabled  = false;
+      btn.innerHTML = '<i class="fas fa-heart"></i> Submit My Photos';
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  </script>
+</body>
+</html>
