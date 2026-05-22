@@ -1486,12 +1486,6 @@ function enterSite(){
   var main=document.getElementById('main-site');
   main.style.visibility='visible';
 
-  /* Scroll to hero immediately after overlay hides */
-  setTimeout(function(){
-    var hero = document.getElementById('home');
-    if(hero) hero.scrollIntoView({ behavior:'smooth', block:'start' });
-  }, 200);
-
   /* Wire the music pill toggle to the same bgMusic element */
   var btn=document.getElementById('musicToggle');
   var ico=document.getElementById('musicIcon');
