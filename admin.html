@@ -3,36 +3,299 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Admin — Jonah & John Paul Gallery</title>
-  <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700&family=Raleway:wght@300;400;500;600&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet">
+  <title>Admin — Jonah & John Paul</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Cinzel+Decorative:wght@400;700&family=Raleway:wght@300;400;500;600;700&family=Dancing+Script:wght@400;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <link rel="stylesheet" href="assets/css/admin.css">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --navy:      #040d1a;
+      --navy2:     #0a1f38;
+      --navy3:     #122944;
+      --navy4:     #1a3a5e;
+      --blue:      #2d78c0;
+      --blue-lt:   #4a9fd4;
+      --blue-soft: #7ec0e0;
+      --sky:       #b4d8ee;
+      --gold:      #c8a040;
+      --gold-lt:   #e6cc78;
+      --white:     #f0f8ff;
+      --muted:     rgba(180,216,238,.55);
+    }
+
+    html, body { min-height: 100vh; background: var(--navy); color: var(--white); font-family: 'Raleway', sans-serif; }
+
+    /* ── PETALS ── */
+    #petals { position: fixed; inset: 0; pointer-events: none; z-index: 0; overflow: hidden; }
+    @keyframes fall { 0%{transform:translateY(-60px) rotate(0deg);opacity:0;} 10%{opacity:.6;} 90%{opacity:.2;} 100%{transform:translateY(110vh) rotate(720deg);opacity:0;} }
+
+    /* ── LOGIN ── */
+    #loginScreen {
+      position: fixed; inset: 0; z-index: 1000;
+      background: linear-gradient(150deg, var(--navy) 0%, var(--navy2) 50%, var(--navy3) 100%);
+      display: flex; align-items: center; justify-content: center;
+    }
+    #loginScreen.hidden { display: none; }
+    .login-box {
+      background: rgba(10,31,56,.85); border: 1px solid rgba(200,160,64,.25);
+      border-radius: 20px; padding: 48px 40px; width: 100%; max-width: 400px;
+      text-align: center; backdrop-filter: blur(12px);
+      box-shadow: 0 24px 80px rgba(0,0,0,.5);
+    }
+    .login-hearts { font-size: 1.4rem; color: var(--gold); letter-spacing: 12px; margin-bottom: 20px; opacity: .7; }
+    .login-brand { font-family: 'Cinzel Decorative', serif; font-size: 1rem; color: var(--gold); letter-spacing: 3px; margin-bottom: 6px; }
+    .login-title { font-family: 'Dancing Script', cursive; font-size: 2.2rem; color: var(--sky); margin-bottom: 6px; }
+    .login-sub { font-size: .72rem; letter-spacing: 2.5px; text-transform: uppercase; color: var(--muted); margin-bottom: 32px; }
+    .login-label { display: block; text-align: left; font-size: .7rem; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); margin-bottom: 8px; }
+    .login-input {
+      width: 100%; padding: 14px 18px; background: rgba(255,255,255,.06);
+      border: 1px solid rgba(180,216,238,.2); border-radius: 10px;
+      color: var(--white); font-family: 'Raleway', sans-serif; font-size: .95rem;
+      margin-bottom: 20px; outline: none; transition: border-color .2s;
+    }
+    .login-input:focus { border-color: var(--blue-lt); }
+    .login-btn {
+      width: 100%; padding: 14px; background: linear-gradient(135deg, var(--blue) 0%, var(--blue-lt) 100%);
+      border: none; border-radius: 10px; color: #fff; font-family: 'Raleway', sans-serif;
+      font-size: .88rem; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase;
+      cursor: pointer; transition: opacity .2s; margin-bottom: 12px;
+    }
+    .login-btn:hover { opacity: .88; }
+    .login-error { color: #ff7eb3; font-size: .78rem; display: none; margin-top: 4px; }
+
+    /* ── DASHBOARD ── */
+    #dashboard { display: none; position: relative; z-index: 1; min-height: 100vh; }
+    #dashboard.show { display: block; }
+
+    /* ── TOP BAR ── */
+    .admin-bar {
+      position: sticky; top: 0; z-index: 100;
+      background: rgba(4,13,26,.92); border-bottom: 1px solid rgba(200,160,64,.18);
+      backdrop-filter: blur(12px);
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 14px 32px; gap: 16px;
+    }
+    .admin-bar-brand { display: flex; align-items: center; gap: 10px; }
+    .admin-bar-logo { font-family: 'Cinzel Decorative', serif; font-size: .85rem; color: var(--gold); letter-spacing: 2px; }
+    .admin-bar-sep { width: 1px; height: 22px; background: rgba(200,160,64,.25); }
+    .admin-bar-tag { font-size: .65rem; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); }
+    .admin-bar-right { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+    .admin-bar-btn {
+      padding: 7px 16px; border-radius: 8px; font-family: 'Raleway', sans-serif;
+      font-size: .72rem; font-weight: 600; letter-spacing: 1px; text-transform: uppercase;
+      cursor: pointer; text-decoration: none; display: flex; align-items: center; gap: 6px;
+      transition: all .2s;
+    }
+    .admin-bar-btn.outline { background: transparent; border: 1px solid rgba(180,216,238,.25); color: var(--sky); }
+    .admin-bar-btn.outline:hover { border-color: var(--blue-lt); color: var(--white); }
+    .admin-bar-btn.danger { background: rgba(220,60,60,.15); border: 1px solid rgba(220,60,60,.3); color: #ff9898; }
+    .admin-bar-btn.danger:hover { background: rgba(220,60,60,.25); }
+
+    /* ── BODY ── */
+    .dash-body { max-width: 1280px; margin: 0 auto; padding: 36px 24px 80px; }
+
+    /* ── STATS ── */
+    .stats-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 16px; margin-bottom: 32px; }
+    .stat-card {
+      background: rgba(10,31,56,.7); border: 1px solid rgba(45,120,192,.2);
+      border-radius: 16px; padding: 22px 20px; text-align: center;
+      backdrop-filter: blur(8px); transition: border-color .2s;
+    }
+    .stat-card:hover { border-color: rgba(74,159,212,.4); }
+    .stat-num { font-family: 'Cormorant Garamond', serif; font-size: 2.4rem; color: var(--gold-lt); display: block; line-height: 1; margin-bottom: 6px; }
+    .stat-lbl { font-size: .62rem; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); }
+
+    /* ── TABS ── */
+    .dash-tabs { display: flex; gap: 4px; margin-bottom: 24px; flex-wrap: wrap; }
+    .dash-tab {
+      padding: 10px 22px; border-radius: 10px; border: 1px solid rgba(180,216,238,.15);
+      background: transparent; color: var(--muted); font-family: 'Raleway', sans-serif;
+      font-size: .72rem; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase;
+      cursor: pointer; transition: all .2s;
+    }
+    .dash-tab:hover { border-color: var(--blue-lt); color: var(--sky); }
+    .dash-tab.active { background: linear-gradient(135deg, var(--blue) 0%, var(--blue-lt) 100%); border-color: transparent; color: #fff; }
+
+    /* ── TAB PANELS ── */
+    .tab-panel { display: none; }
+    .tab-panel.active { display: block; }
+
+    /* ── SECTION ── */
+    .dash-section { background: rgba(10,31,56,.6); border: 1px solid rgba(45,120,192,.18); border-radius: 20px; padding: 28px; margin-bottom: 24px; }
+    .dash-section-header { margin-bottom: 22px; padding-bottom: 18px; border-bottom: 1px solid rgba(180,216,238,.1); }
+    .dash-section-tag { font-size: .6rem; letter-spacing: 3px; text-transform: uppercase; color: var(--gold); margin-bottom: 6px; }
+    .dash-section-title { font-family: 'Cormorant Garamond', serif; font-size: 1.5rem; color: var(--sky); }
+    .dash-section-sub { font-size: .75rem; color: var(--muted); margin-top: 4px; }
+
+    /* ── UPLOAD FORM ── */
+    .field-label { display: block; font-size: .65rem; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); margin-bottom: 8px; }
+    .admin-input {
+      width: 100%; padding: 12px 16px; background: rgba(255,255,255,.05);
+      border: 1px solid rgba(180,216,238,.18); border-radius: 10px;
+      color: var(--white); font-family: 'Raleway', sans-serif; font-size: .9rem;
+      margin-bottom: 20px; outline: none; transition: border-color .2s;
+    }
+    .admin-input:focus { border-color: var(--blue-lt); }
+    .cat-pills { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 24px; }
+    .cat-pill {
+      padding: 7px 16px; border-radius: 20px; border: 1px solid rgba(180,216,238,.2);
+      background: transparent; color: var(--muted); font-family: 'Raleway', sans-serif;
+      font-size: .72rem; cursor: pointer; transition: all .2s;
+    }
+    .cat-pill:hover { border-color: var(--blue-lt); color: var(--sky); }
+    .cat-pill.active { background: rgba(45,120,192,.25); border-color: var(--blue-lt); color: var(--white); }
+    .admin-drop-zone {
+      border: 2px dashed rgba(74,159,212,.3); border-radius: 16px; padding: 48px 24px;
+      text-align: center; cursor: pointer; transition: all .25s; margin-bottom: 20px;
+      background: rgba(10,31,56,.4);
+    }
+    .admin-drop-zone:hover, .admin-drop-zone.drag-over { border-color: var(--blue-lt); background: rgba(45,120,192,.08); }
+    .admin-drop-zone input[type=file] { display: none; }
+    .admin-drop-icon { font-size: 2.2rem; color: var(--blue-soft); margin-bottom: 12px; }
+    .admin-drop-zone h3 { font-family: 'Cormorant Garamond', serif; font-size: 1.4rem; color: var(--sky); margin-bottom: 6px; }
+    .admin-drop-zone p { font-size: .75rem; color: var(--muted); margin-bottom: 18px; }
+    .admin-drop-btn {
+      padding: 10px 24px; background: rgba(45,120,192,.2); border: 1px solid rgba(74,159,212,.35);
+      border-radius: 10px; color: var(--sky); font-family: 'Raleway', sans-serif;
+      font-size: .78rem; font-weight: 600; cursor: pointer; transition: all .2s;
+    }
+    .admin-drop-btn:hover { background: rgba(45,120,192,.35); }
+    .admin-preview-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 10px; }
+    .admin-thumb { position: relative; aspect-ratio: 1; border-radius: 8px; overflow: hidden; }
+    .admin-thumb img { width: 100%; height: 100%; object-fit: cover; }
+    .admin-thumb .rm {
+      position: absolute; top: 4px; right: 4px; width: 22px; height: 22px;
+      background: rgba(4,13,26,.8); border: none; border-radius: 50%; color: #ff9898;
+      font-size: .65rem; cursor: pointer; display: flex; align-items: center; justify-content: center;
+    }
+    .admin-progress-wrap { display: none; margin-bottom: 20px; }
+    .admin-progress-wrap.show { display: block; }
+    .admin-progress-bar-outer { height: 6px; background: rgba(255,255,255,.08); border-radius: 3px; margin-bottom: 8px; }
+    .admin-progress-bar { height: 100%; background: linear-gradient(90deg, var(--blue), var(--blue-lt)); border-radius: 3px; width: 0; transition: width .3s; }
+    .admin-progress-text { font-size: .72rem; color: var(--muted); }
+    .upload-photos-btn {
+      padding: 13px 32px; background: linear-gradient(135deg, var(--blue), var(--blue-lt));
+      border: none; border-radius: 12px; color: #fff; font-family: 'Raleway', sans-serif;
+      font-size: .82rem; font-weight: 700; letter-spacing: 1px; text-transform: uppercase;
+      cursor: pointer; transition: opacity .2s; display: flex; align-items: center; gap: 8px;
+    }
+    .upload-photos-btn:hover { opacity: .85; }
+    .upload-photos-btn:disabled { opacity: .4; cursor: not-allowed; }
+    .clear-files-btn {
+      padding: 6px 14px; background: transparent; border: 1px solid rgba(220,60,60,.3);
+      border-radius: 8px; color: #ff9898; font-size: .7rem; cursor: pointer;
+    }
+
+    /* ── MANAGE / GUEST GRIDS ── */
+    .manage-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 16px; }
+    .manage-card { background: rgba(10,31,56,.7); border: 1px solid rgba(45,120,192,.18); border-radius: 14px; overflow: hidden; transition: border-color .2s; }
+    .manage-card:hover { border-color: rgba(74,159,212,.4); }
+    .manage-card img { width: 100%; aspect-ratio: 1; object-fit: cover; display: block; }
+    .manage-card-body { padding: 12px 14px; }
+    .manage-card-meta { font-size: .65rem; letter-spacing: 1.5px; text-transform: uppercase; color: var(--gold); margin-bottom: 4px; }
+    .manage-card-caption { font-size: .78rem; color: var(--sky); margin-bottom: 10px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .action-btn {
+      padding: 7px 14px; border-radius: 8px; font-family: 'Raleway', sans-serif;
+      font-size: .68rem; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 5px; transition: all .2s;
+    }
+    .delete-btn { background: rgba(220,60,60,.15); border: 1px solid rgba(220,60,60,.3); color: #ff9898; }
+    .delete-btn:hover { background: rgba(220,60,60,.3); }
+
+    .guest-submission-card { background: rgba(10,31,56,.7); border: 1px solid rgba(45,120,192,.18); border-radius: 14px; overflow: hidden; display: flex; flex-direction: column; transition: border-color .2s; }
+    .guest-submission-card:hover { border-color: rgba(74,159,212,.4); }
+    .gsub-img { width: 100%; aspect-ratio: 4/3; object-fit: cover; display: block; }
+    .gsub-body { padding: 12px 14px; flex: 1; display: flex; flex-direction: column; gap: 4px; }
+    .gsub-name { font-size: .75rem; font-weight: 700; color: var(--gold-lt); }
+    .gsub-caption { font-size: .75rem; color: var(--sky); flex: 1; }
+    .gsub-time { font-size: .65rem; color: var(--muted); }
+    .gsub-actions { margin-top: 10px; }
+    .hide-btn { padding: 6px 14px; background: rgba(220,60,60,.15); border: 1px solid rgba(220,60,60,.3); border-radius: 8px; color: #ff9898; font-size: .68rem; cursor: pointer; transition: all .2s; }
+    .hide-btn:hover { background: rgba(220,60,60,.3); }
+
+    /* ── WISHES ── */
+    .wishes-wall { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 16px; }
+    .wish-card {
+      background: rgba(10,31,56,.7); border: 1px solid rgba(45,120,192,.18);
+      border-radius: 14px; padding: 20px; transition: border-color .2s;
+    }
+    .wish-card:hover { border-color: rgba(74,159,212,.35); }
+    .wish-name { font-family: 'Dancing Script', cursive; font-size: 1.1rem; color: var(--gold-lt); margin-bottom: 8px; }
+    .wish-text { font-size: .82rem; color: var(--sky); line-height: 1.6; margin-bottom: 12px; }
+    .wish-time { font-size: .65rem; color: var(--muted); }
+    .wish-delete { float: right; padding: 4px 10px; background: rgba(220,60,60,.15); border: 1px solid rgba(220,60,60,.3); border-radius: 6px; color: #ff9898; font-size: .65rem; cursor: pointer; }
+
+    /* ── RSVP TABLE ── */
+    .rsvp-table-wrap { overflow-x: auto; }
+    .rsvp-table { width: 100%; border-collapse: collapse; font-size: .8rem; }
+    .rsvp-table th {
+      padding: 12px 14px; text-align: left; font-size: .62rem; letter-spacing: 2px;
+      text-transform: uppercase; color: var(--muted); border-bottom: 1px solid rgba(180,216,238,.12);
+      white-space: nowrap;
+    }
+    .rsvp-table td { padding: 12px 14px; border-bottom: 1px solid rgba(180,216,238,.07); color: var(--sky); vertical-align: top; }
+    .rsvp-table tr:last-child td { border-bottom: none; }
+    .rsvp-table tr:hover td { background: rgba(45,120,192,.06); }
+    .att-accept { color: #7ec0e0; font-weight: 600; }
+    .att-decline { color: #ff9898; font-weight: 600; }
+
+    /* ── EMPTY / LOADING ── */
+    .empty-state { text-align: center; padding: 48px 20px; color: var(--muted); }
+    .empty-state i { font-size: 2rem; margin-bottom: 12px; display: block; }
+    .empty-state p { font-size: .82rem; }
+    .loading-state { text-align: center; padding: 32px; color: var(--muted); font-size: .82rem; }
+
+    /* ── TOAST ── */
+    #globalToast {
+      position: fixed; bottom: 28px; right: 28px; z-index: 9999;
+      padding: 14px 24px; border-radius: 14px; font-family: 'Raleway', sans-serif;
+      font-size: .85rem; font-weight: 600; display: flex; align-items: center; gap: 10px;
+      transform: translateY(120px); opacity: 0; pointer-events: none;
+      transition: all .45s cubic-bezier(.175,.885,.32,1.275);
+      box-shadow: 0 10px 40px rgba(0,0,0,.3);
+    }
+
+    @media (max-width: 600px) {
+      .admin-bar { padding: 12px 16px; }
+      .admin-bar-right { gap: 6px; }
+      .admin-bar-btn { padding: 6px 10px; font-size: .65rem; }
+      .dash-body { padding: 20px 14px 60px; }
+    }
+  </style>
 </head>
 <body>
 
-  <!-- LOGIN SCREEN -->
+  <div id="petals"></div>
+
+  <!-- ══ LOGIN ══ -->
   <div id="loginScreen">
     <div class="login-box">
-      <div class="login-hearts"><span>♡</span><span>♡</span><span>♡</span></div>
+      <div class="login-hearts">♡ ♡ ♡</div>
+      <div class="login-brand">J &amp; JP</div>
       <div class="login-title">Admin Access</div>
-      <div class="login-sub">Jonah & John Paul Gallery</div>
+      <div class="login-sub">Wedding Dashboard</div>
       <label class="login-label" for="loginPass">Password</label>
       <input type="password" id="loginPass" class="login-input" placeholder="••••••••••"
              onkeydown="if(event.key==='Enter')doLogin()">
-      <button class="login-btn" onclick="doLogin()"><i class="fas fa-heart"></i> Enter Dashboard</button>
+      <button class="login-btn" onclick="doLogin()"><i class="fas fa-heart"></i> &nbsp;Enter Dashboard</button>
       <div class="login-error" id="loginError">Incorrect password. Please try again.</div>
     </div>
   </div>
 
-  <!-- DASHBOARD -->
+  <!-- ══ DASHBOARD ══ -->
   <div id="dashboard">
+
+    <!-- Top bar -->
     <div class="admin-bar">
-      <div class="admin-bar-logo">J & M — Admin</div>
+      <div class="admin-bar-brand">
+        <div class="admin-bar-logo">J &amp; JP</div>
+        <div class="admin-bar-sep"></div>
+        <div class="admin-bar-tag">Admin Dashboard</div>
+      </div>
       <div class="admin-bar-right">
-        <span class="admin-tag">Gallery Manager</span>
-        <a href="main.html" class="view-site-btn" target="_blank"><i class="fas fa-eye"></i> View Site</a>
-        <a href="guest-upload.html" class="view-site-btn" target="_blank"><i class="fas fa-qrcode"></i> Guest Page</a>
-        <button class="logout-btn" onclick="logout()">Logout</button>
+        <a href="index.html" class="admin-bar-btn outline" target="_blank"><i class="fas fa-eye"></i> View Site</a>
+        <a href="guest-upload.html" class="admin-bar-btn outline" target="_blank"><i class="fas fa-qrcode"></i> Guest Page</a>
+        <button class="admin-bar-btn danger" onclick="logout()"><i class="fas fa-sign-out-alt"></i> Logout</button>
       </div>
     </div>
 
@@ -40,118 +303,108 @@
 
       <!-- Stats -->
       <div class="stats-row">
-        <div class="stat-card"><span class="stat-num" id="statCouple">—</span><div class="stat-label">Couple Photos</div></div>
-        <div class="stat-card"><span class="stat-num" id="statGuest">—</span><div class="stat-label">Guest Photos</div></div>
-        <div class="stat-card"><span class="stat-num" id="statTotal">—</span><div class="stat-label">Total Photos</div></div>
-        <div class="stat-card"><span class="stat-num" id="statRSVP">—</span><div class="stat-label">RSVPs</div></div>
+        <div class="stat-card"><span class="stat-num" id="statCouple">—</span><div class="stat-lbl">Couple Photos</div></div>
+        <div class="stat-card"><span class="stat-num" id="statGuest">—</span><div class="stat-lbl">Guest Photos</div></div>
+        <div class="stat-card"><span class="stat-num" id="statTotal">—</span><div class="stat-lbl">Total Photos</div></div>
+        <div class="stat-card"><span class="stat-num" id="statRSVP">—</span><div class="stat-lbl">RSVPs</div></div>
+        <div class="stat-card"><span class="stat-num" id="statWishes">—</span><div class="stat-lbl">Wishes</div></div>
       </div>
 
       <!-- Tabs -->
       <div class="dash-tabs">
-        <button class="dash-tab active" onclick="switchTab('upload')">Upload</button>
-        <button class="dash-tab" onclick="switchTab('manage')">Manage Gallery</button>
-        <button class="dash-tab" onclick="switchTab('guests')">Guest Submissions</button>
-        <button class="dash-tab" onclick="switchTab('rsvps')">RSVPs</button>
+        <button class="dash-tab active"  onclick="switchTab('upload')">↑ Upload</button>
+        <button class="dash-tab"         onclick="switchTab('manage')">Gallery</button>
+        <button class="dash-tab"         onclick="switchTab('guests')">Guest Submissions</button>
+        <button class="dash-tab"         onclick="switchTab('rsvps')">RSVPs</button>
+        <button class="dash-tab"         onclick="switchTab('wishes')">Wishes</button>
       </div>
 
-      <!-- TAB: UPLOAD -->
+      <!-- ── TAB: UPLOAD ── -->
       <div class="tab-panel active" id="tab-upload">
         <div class="dash-section">
           <div class="dash-section-header">
-            <div>
-              <div class="dash-section-title">Upload Couple Photos</div>
-              <div class="dash-section-sub">These appear in the "Our Memories" gallery section</div>
-            </div>
+            <div class="dash-section-tag">Gallery Manager</div>
+            <div class="dash-section-title">Upload Couple Photos</div>
+            <div class="dash-section-sub">These appear in the "Our Memories" gallery on the wedding site.</div>
           </div>
-          <div class="admin-upload-card">
-            <!-- Caption -->
-            <label class="field-label">Caption</label>
-            <input type="text" class="admin-input" id="adminCaption" placeholder="e.g. Pre-nup shoot at Batangas...">
 
-            <!-- Category pills -->
-            <label class="field-label">Category</label>
-            <div class="cat-pills">
-              <button class="cat-pill active" data-cat="memories">💕 Memories</button>
-              <button class="cat-pill" data-cat="prenup">📸 Pre-Nup</button>
-              <button class="cat-pill" data-cat="proposal">💍 Proposal</button>
-              <button class="cat-pill" data-cat="travels">✈️ Travels</button>
-              <button class="cat-pill" data-cat="everyday">💛 Everyday</button>
-              <button class="cat-pill" data-cat="wedding">🌸 Wedding</button>
-            </div>
+          <label class="field-label">Caption</label>
+          <input type="text" class="admin-input" id="adminCaption" placeholder="e.g. Pre-nup shoot in Batangas…">
 
-            <!-- Drop zone -->
-            <div class="admin-drop-zone" id="adminDropZone">
-              <input type="file" id="adminPhotoInput" multiple accept="image/*">
-              <div class="admin-drop-icon"><i class="fas fa-images"></i></div>
-              <h3>Drop Photos Here</h3>
-              <p>JPG, PNG, HEIC · Multiple files at once</p>
-              <button class="admin-drop-btn" onclick="document.getElementById('adminPhotoInput').click();event.stopPropagation()">
-                <i class="fas fa-folder-open"></i> Browse Photos
-              </button>
-            </div>
-
-            <!-- Preview -->
-            <div id="adminPreviewWrap" style="display:none;margin-bottom:20px">
-              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
-                <span style="font-size:.75rem;letter-spacing:2px;text-transform:uppercase;color:var(--pink-soft);font-weight:700" id="adminPreviewCount"></span>
-                <button class="clear-files-btn" onclick="clearAdminFiles()"><i class="fas fa-times"></i> Clear</button>
-              </div>
-              <div class="admin-preview-grid" id="adminPreviewGrid"></div>
-            </div>
-
-            <!-- Progress -->
-            <div class="admin-upload-progress" id="adminProgressWrap">
-              <div class="admin-progress-bar-outer"><div class="admin-progress-bar" id="adminProgressBar"></div></div>
-              <div class="admin-progress-text" id="adminProgressText">Uploading...</div>
-            </div>
-
-            <div class="admin-upload-actions">
-              <button class="upload-photos-btn" id="uploadBtn" onclick="uploadCouplePhotos()">
-                <i class="fas fa-cloud-upload-alt"></i> Upload to Gallery
-              </button>
-            </div>
+          <label class="field-label">Category</label>
+          <div class="cat-pills">
+            <button class="cat-pill active" data-cat="memories">💕 Memories</button>
+            <button class="cat-pill" data-cat="prenup">📸 Pre-Nup</button>
+            <button class="cat-pill" data-cat="proposal">💍 Proposal</button>
+            <button class="cat-pill" data-cat="travels">✈️ Travels</button>
+            <button class="cat-pill" data-cat="everyday">💛 Everyday</button>
+            <button class="cat-pill" data-cat="wedding">🌸 Wedding</button>
           </div>
+
+          <div class="admin-drop-zone" id="adminDropZone">
+            <input type="file" id="adminPhotoInput" multiple accept="image/*">
+            <div class="admin-drop-icon"><i class="fas fa-images"></i></div>
+            <h3>Drop Photos Here</h3>
+            <p>JPG, PNG, HEIC · Multiple files at once</p>
+            <button class="admin-drop-btn" onclick="document.getElementById('adminPhotoInput').click();event.stopPropagation()">
+              <i class="fas fa-folder-open"></i> Browse Photos
+            </button>
+          </div>
+
+          <div id="adminPreviewWrap" style="display:none;margin-bottom:20px">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+              <span class="field-label" style="margin:0" id="adminPreviewCount"></span>
+              <button class="clear-files-btn" onclick="clearAdminFiles()"><i class="fas fa-times"></i> Clear</button>
+            </div>
+            <div class="admin-preview-grid" id="adminPreviewGrid"></div>
+          </div>
+
+          <div class="admin-progress-wrap" id="adminProgressWrap">
+            <div class="admin-progress-bar-outer"><div class="admin-progress-bar" id="adminProgressBar"></div></div>
+            <div class="admin-progress-text" id="adminProgressText">Uploading…</div>
+          </div>
+
+          <button class="upload-photos-btn" id="uploadBtn" onclick="uploadCouplePhotos()">
+            <i class="fas fa-cloud-upload-alt"></i> Upload to Gallery
+          </button>
         </div>
       </div>
 
-      <!-- TAB: MANAGE -->
+      <!-- ── TAB: MANAGE ── -->
       <div class="tab-panel" id="tab-manage">
         <div class="dash-section">
           <div class="dash-section-header">
-            <div>
-              <div class="dash-section-title">Couple's Gallery</div>
-              <div class="dash-section-sub">All uploaded couple photos. Click Remove to delete permanently.</div>
-            </div>
+            <div class="dash-section-tag">Couple Photos</div>
+            <div class="dash-section-title">Manage Gallery</div>
+            <div class="dash-section-sub">All uploaded couple photos. Click Remove to delete permanently.</div>
           </div>
           <div class="manage-grid" id="manageGrid">
-            <div class="loading-state"><i class="fas fa-spinner fa-spin"></i> Loading photos...</div>
+            <div class="loading-state"><i class="fas fa-spinner fa-spin"></i> Loading photos…</div>
           </div>
         </div>
       </div>
 
-      <!-- TAB: GUESTS -->
+      <!-- ── TAB: GUESTS ── -->
       <div class="tab-panel" id="tab-guests">
         <div class="dash-section">
           <div class="dash-section-header">
-            <div>
-              <div class="dash-section-title">Guest Submissions</div>
-              <div class="dash-section-sub">Photos uploaded by guests. Remove to hide from the gallery.</div>
-            </div>
+            <div class="dash-section-tag">Guest Uploads</div>
+            <div class="dash-section-title">Guest Submissions</div>
+            <div class="dash-section-sub">Photos uploaded by guests. Remove to hide from the gallery.</div>
           </div>
           <div class="manage-grid" id="guestGrid">
-            <div class="loading-state"><i class="fas fa-spinner fa-spin"></i> Loading submissions...</div>
+            <div class="loading-state"><i class="fas fa-spinner fa-spin"></i> Loading submissions…</div>
           </div>
         </div>
       </div>
 
-      <!-- TAB: RSVPs -->
+      <!-- ── TAB: RSVPs ── -->
       <div class="tab-panel" id="tab-rsvps">
         <div class="dash-section">
           <div class="dash-section-header">
-            <div>
-              <div class="dash-section-title">RSVP Responses</div>
-              <div class="dash-section-sub">All guest RSVP submissions.</div>
-            </div>
+            <div class="dash-section-tag">Responses</div>
+            <div class="dash-section-title">RSVP List</div>
+            <div class="dash-section-sub">All guest RSVP submissions.</div>
           </div>
           <div class="rsvp-table-wrap">
             <table class="rsvp-table">
@@ -162,56 +415,122 @@
                   <th>Phone</th>
                   <th>Attendance</th>
                   <th>Guests</th>
-                  <th>Meal</th>
                   <th>Message</th>
                 </tr>
               </thead>
               <tbody id="rsvpTableBody">
-                <tr><td colspan="7" class="loading-state"><i class="fas fa-spinner fa-spin"></i> Loading RSVPs...</td></tr>
+                <tr><td colspan="6" class="loading-state"><i class="fas fa-spinner fa-spin"></i> Loading RSVPs…</td></tr>
               </tbody>
             </table>
           </div>
         </div>
       </div>
 
-    </div>
-  </div>
+      <!-- ── TAB: WISHES ── -->
+      <div class="tab-panel" id="tab-wishes">
+        <div class="dash-section">
+          <div class="dash-section-header">
+            <div class="dash-section-tag">Kind Words</div>
+            <div class="dash-section-title">Wishes &amp; Messages</div>
+            <div class="dash-section-sub">All messages left by guests on the wedding site.</div>
+          </div>
+          <div class="wishes-wall" id="wishesWall">
+            <div class="loading-state"><i class="fas fa-spinner fa-spin"></i> Loading wishes…</div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /.dash-body -->
+  </div><!-- /#dashboard -->
 
   <!-- Firebase compat SDK -->
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-storage-compat.js"></script>
 
-  <!-- Shared utilities -->
-  <script src="assets/js/shared.js"></script>
+  <!-- Self-contained Firebase init (no dependency on shared.js) -->
+  <script>
+    (function initFirebase(){
+      const FIREBASE_CONFIG = {
+        apiKey:            "AIzaSyCwVfo4WCKON-kyBj310ANA9HxHOrRF3f8",
+        authDomain:        "weeding-database.firebaseapp.com",
+        projectId:         "weeding-database",
+        storageBucket:     "weeding-database.firebasestorage.app",
+        messagingSenderId: "27469893127",
+        appId:             "1:27469893127:web:7bd5ad9a556fc5f30d24a2"
+      };
+      if(!firebase.apps.length) firebase.initializeApp(FIREBASE_CONFIG);
+      window.db = firebase.firestore();
+      window.FS = {
+        photos: ()=> window.db.collection('photos'),
+        wishes: ()=> window.db.collection('wishes'),
+        rsvps:  ()=> window.db.collection('rsvps'),
+      };
+      window.escHtml = function(s){
+        return String(s).replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]));
+      };
+    })();
+  </script>
 
   <script>
-    /* ════════════════════════════════════════════════
-       ADMIN PASSWORD
-       Store this securely — do NOT expose in shared.js.
-       For production, replace with Firebase Auth.
-    ════════════════════════════════════════════════ */
-    const ADMIN_PASSWORD = 'Jon&John2026';
+    /* ── FILE:// WARNING ── */
+    if(location.protocol==='file:'){
+      document.body.insertAdjacentHTML('afterbegin',
+        '<div style="position:fixed;top:0;left:0;right:0;z-index:99999;background:#c8a040;color:#0a1f38;text-align:center;padding:12px 20px;font-family:Raleway,sans-serif;font-size:.82rem;font-weight:700">'+
+        '⚠️ Firebase does not work with file:// URLs. Deploy to Vercel or run locally: <code style="background:rgba(0,0,0,.15);padding:2px 8px;border-radius:4px">npx serve .</code> in your project folder.</div>'
+      );
+    }
+
+    /* ── PETALS ── */
+    (function(){
+      var c = document.getElementById('petals');
+      var cols = ['#7ec0e0','#4a9fd4','#b4d8ee','#2d78c0','#d8eef8'];
+      for(var i=0;i<16;i++){
+        var p=document.createElement('div');
+        var sz=10+Math.random()*16;
+        p.style.cssText='position:absolute;top:-60px;left:'+Math.random()*100+'%;width:'+sz+'px;height:'+sz+'px;border-radius:'+(Math.random()>.5?'0% 100% 0% 100%':'100% 0% 100% 0%')+';background:radial-gradient(ellipse,'+cols[Math.floor(Math.random()*cols.length)]+' 0%,transparent 100%);opacity:'+(0.2+Math.random()*.4)+';animation:fall '+(7+Math.random()*10)+'s linear '+(Math.random()*12)+'s infinite;pointer-events:none;';
+        c.appendChild(p);
+      }
+    })();
+
+    /* ── CLOUDINARY CONFIG ── */
+    const CLOUDINARY_CLOUD  = 'daxejisir';
+    const CLOUDINARY_PRESET = 'wedding_uploads';
+    const CLOUDINARY_URL    = `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD}/image/upload`;
+
+    /* ── TOAST ── */
+    function showToast(msg, type='blue'){
+      var t=document.getElementById('globalToast');
+      if(!t){t=document.createElement('div');t.id='globalToast';document.body.appendChild(t);}
+      t.style.background = type==='gold'
+        ? 'linear-gradient(135deg,#c8a040,#f8edc8)'
+        : 'linear-gradient(135deg,#122944,#2d78c0)';
+      t.style.color='white';
+      t.innerHTML='<i class="fas fa-heart"></i><span>'+msg+'</span>';
+      t.style.transform='translateY(0)';t.style.opacity='1';
+      clearTimeout(window._tt);
+      window._tt=setTimeout(function(){t.style.transform='translateY(120px)';t.style.opacity='0';},3800);
+    }
+    window.showToast = showToast;
 
     /* ── AUTH ── */
+    const ADMIN_PASSWORD = 'Jon&John2026';
     let authed = false;
 
-    function doLogin() {
+    function doLogin(){
       const pw = document.getElementById('loginPass').value;
-      if (pw === ADMIN_PASSWORD) {
+      if(pw === ADMIN_PASSWORD){
         authed = true;
         document.getElementById('loginScreen').classList.add('hidden');
         document.getElementById('dashboard').classList.add('show');
         startListeners();
       } else {
         document.getElementById('loginError').style.display = 'block';
-        const input = document.getElementById('loginPass');
-        input.style.borderColor = '#ff6b9d';
-        setTimeout(() => { input.style.borderColor = ''; }, 1500);
+        const inp = document.getElementById('loginPass');
+        inp.style.borderColor = '#ff6b9d';
+        setTimeout(()=>{ inp.style.borderColor=''; }, 1500);
       }
     }
-
-    function logout() {
+    function logout(){
       authed = false;
       document.getElementById('loginPass').value = '';
       document.getElementById('loginScreen').classList.remove('hidden');
@@ -219,250 +538,278 @@
     }
 
     /* ── TABS ── */
-    const tabNames = ['upload','manage','guests','rsvps'];
-    function switchTab(name) {
-      document.querySelectorAll('.dash-tab').forEach((t, i) =>
-        t.classList.toggle('active', tabNames[i] === name)
-      );
-      document.querySelectorAll('.tab-panel').forEach(p =>
-        p.classList.toggle('active', p.id === 'tab-' + name)
-      );
+    const tabNames = ['upload','manage','guests','rsvps','wishes'];
+    function switchTab(name){
+      document.querySelectorAll('.dash-tab').forEach((t,i) => t.classList.toggle('active', tabNames[i]===name));
+      document.querySelectorAll('.tab-panel').forEach(p => p.classList.toggle('active', p.id==='tab-'+name));
+      if(name==='manage') renderManageGrid(window._allPhotos||[]);
+      if(name==='guests') renderGuestGrid(window._allPhotos||[]);
+      if(name==='rsvps'){
+        if(window._rsvpDocs && window._rsvpDocs.length) renderRSVPs(window._rsvpDocs);
+        else document.getElementById('rsvpTableBody').innerHTML='<tr><td colspan="6"><div class="loading-state"><i class="fas fa-spinner fa-spin"></i> Loading RSVPs\u2026</div></td></tr>';
+      }
+      if(name==='wishes'){
+        if(window._wishDocs && window._wishDocs.length) renderWishes(window._wishDocs);
+        else document.getElementById('wishesWall').innerHTML='<div class="loading-state"><i class="fas fa-spinner fa-spin"></i> Loading wishes\u2026</div>';
+      }
     }
 
     /* ── CATEGORY PILLS ── */
     let selectedCat = 'memories';
-    document.querySelectorAll('.cat-pill').forEach(pill => {
-      pill.addEventListener('click', () => {
-        document.querySelectorAll('.cat-pill').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.cat-pill').forEach(pill=>{
+      pill.addEventListener('click',()=>{
+        document.querySelectorAll('.cat-pill').forEach(p=>p.classList.remove('active'));
         pill.classList.add('active');
         selectedCat = pill.dataset.cat;
       });
     });
 
-    /* ── ADMIN FILE SELECTION ── */
+    /* ── FILE SELECTION ── */
     let adminFiles = [];
     const adminDropZone   = document.getElementById('adminDropZone');
     const adminPhotoInput = document.getElementById('adminPhotoInput');
-
     adminPhotoInput.addEventListener('change', e => addAdminFiles(Array.from(e.target.files)));
     adminDropZone.addEventListener('dragover',  e => { e.preventDefault(); adminDropZone.classList.add('drag-over'); });
-    adminDropZone.addEventListener('dragleave', () => adminDropZone.classList.remove('drag-over'));
+    adminDropZone.addEventListener('dragleave', ()  => adminDropZone.classList.remove('drag-over'));
     adminDropZone.addEventListener('drop', e => {
       e.preventDefault(); adminDropZone.classList.remove('drag-over');
-      addAdminFiles(Array.from(e.dataTransfer.files).filter(f => f.type.startsWith('image/')));
+      addAdminFiles(Array.from(e.dataTransfer.files).filter(f=>f.type.startsWith('image/')));
     });
-
-    function addAdminFiles(files) {
-      files.forEach(f => adminFiles.push(f));
-      renderAdminPreview();
-    }
-
-    function renderAdminPreview() {
-      const wrap  = document.getElementById('adminPreviewWrap');
-      const grid  = document.getElementById('adminPreviewGrid');
-      const count = document.getElementById('adminPreviewCount');
-      if (!adminFiles.length) { wrap.style.display = 'none'; return; }
-      wrap.style.display = 'block';
-      count.textContent = `${adminFiles.length} photo${adminFiles.length > 1 ? 's' : ''} selected`;
-      grid.innerHTML = '';
-      adminFiles.forEach((f, i) => {
-        const reader = new FileReader();
-        reader.onload = ev => {
-          const el = document.createElement('div');
-          el.className = 'admin-thumb';
-          el.innerHTML = `<img src="${ev.target.result}" alt=""><button class="rm" onclick="removeAdminFile(${i})"><i class="fas fa-times"></i></button>`;
+    function addAdminFiles(files){ files.forEach(f=>adminFiles.push(f)); renderAdminPreview(); }
+    function renderAdminPreview(){
+      const wrap=document.getElementById('adminPreviewWrap');
+      const grid=document.getElementById('adminPreviewGrid');
+      const cnt=document.getElementById('adminPreviewCount');
+      if(!adminFiles.length){ wrap.style.display='none'; return; }
+      wrap.style.display='block';
+      cnt.textContent=`${adminFiles.length} photo${adminFiles.length>1?'s':''} selected`;
+      grid.innerHTML='';
+      adminFiles.forEach((f,i)=>{
+        const r=new FileReader();
+        r.onload=ev=>{
+          const el=document.createElement('div'); el.className='admin-thumb';
+          el.innerHTML=`<img src="${ev.target.result}" alt=""><button class="rm" onclick="removeAdminFile(${i})"><i class="fas fa-times"></i></button>`;
           grid.appendChild(el);
         };
-        reader.readAsDataURL(f);
+        r.readAsDataURL(f);
       });
     }
+    function removeAdminFile(i){ adminFiles.splice(i,1); renderAdminPreview(); }
+    function clearAdminFiles(){ adminFiles=[]; document.getElementById('adminPhotoInput').value=''; renderAdminPreview(); }
 
-    function removeAdminFile(i) { adminFiles.splice(i, 1); renderAdminPreview(); }
-    function clearAdminFiles()  { adminFiles = []; document.getElementById('adminPhotoInput').value = ''; renderAdminPreview(); }
-
-    /* ── UPLOAD COUPLE PHOTOS ── */
-    async function uploadCouplePhotos() {
-      if (!adminFiles.length) { showToast('Please select photos to upload ♡'); return; }
-
-      const caption   = document.getElementById('adminCaption').value.trim();
-      const uploadBtn = document.getElementById('uploadBtn');
+    /* ── UPLOAD (Cloudinary) ── */
+    async function uploadCouplePhotos(){
+      if(!adminFiles.length){ showToast('Please select photos to upload ♡'); return; }
+      const caption    = document.getElementById('adminCaption').value.trim();
+      const uploadBtn  = document.getElementById('uploadBtn');
       const progressWrap = document.getElementById('adminProgressWrap');
       const progressBar  = document.getElementById('adminProgressBar');
       const progressText = document.getElementById('adminProgressText');
-
       uploadBtn.disabled = true;
       progressWrap.classList.add('show');
-
       const total = adminFiles.length;
       let done = 0;
-
-      for (const file of adminFiles) {
-        try {
-          const fileName   = `${Date.now()}_${file.name.replace(/[^a-zA-Z0-9._-]/g,'_')}`;
-          const storageRef = window.storage.ref(`couple-photos/${fileName}`);
-
-          await new Promise((resolve, reject) => {
-            storageRef.put(file).on('state_changed',
-              snap => {
-                const overall = ((done + snap.bytesTransferred / snap.totalBytes) / total) * 100;
-                progressBar.style.width = overall.toFixed(1) + '%';
-                progressText.textContent = `Uploading ${done + 1} of ${total}...`;
-              },
-              reject,
-              resolve
-            );
-          });
-
-          const url = await storageRef.getDownloadURL();
+      for(const file of adminFiles){
+        try{
+          progressText.textContent = `Uploading ${done+1} of ${total}…`;
+          const fd = new FormData();
+          fd.append('file', file);
+          fd.append('upload_preset', CLOUDINARY_PRESET);
+          fd.append('folder', 'couple-photos');
+          const res  = await fetch(CLOUDINARY_URL, { method:'POST', body:fd });
+          const data = await res.json();
+          if(!res.ok || data.error) throw new Error(data.error?.message||'Upload failed');
           await FS.photos().add({
-            url,
-            type:        'couple',
+            url:       data.secure_url,
+            type:      'couple',
             caption,
-            category:    selectedCat,
-            storagePath: `couple-photos/${fileName}`,
-            uploadedAt:  firebase.firestore.FieldValue.serverTimestamp()
+            category:  selectedCat,
+            publicId:  data.public_id,
+            uploadedAt: firebase.firestore.FieldValue.serverTimestamp()
           });
-
           done++;
-          progressBar.style.width = ((done / total) * 100).toFixed(1) + '%';
+          progressBar.style.width = ((done/total)*100).toFixed(1)+'%';
           progressText.textContent = `${done} of ${total} uploaded`;
-        } catch (err) {
-          console.error('Upload error:', err);
-          showToast(`Failed to upload ${file.name}`);
-          done++;
+        } catch(err){
+          console.error(err); showToast(`Failed: ${file.name}`); done++;
         }
       }
-
       progressWrap.classList.remove('show');
-      progressBar.style.width = '0%';
-      showToast(`♡ ${done} photo${done > 1 ? 's' : ''} added to gallery!`, 'gold');
+      progressBar.style.width='0%';
+      showToast(`♡ ${done} photo${done>1?'s':''} added to gallery!`,'gold');
       clearAdminFiles();
-      document.getElementById('adminCaption').value = '';
-      uploadBtn.disabled = false;
+      document.getElementById('adminCaption').value='';
+      uploadBtn.disabled=false;
     }
 
-    /* ── LIVE STATS & GRID LISTENERS ── */
-    let coupleCount = 0, guestCount = 0;
-
-    function startListeners() {
-      // Photos listener
-      FS.photos().orderBy('uploadedAt', 'desc').onSnapshot(snapshot => {
-        const all = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-        coupleCount = all.filter(p => p.type === 'couple').length;
-        guestCount  = all.filter(p => p.type === 'guest').length;
-        document.getElementById('statCouple').textContent = coupleCount;
-        document.getElementById('statGuest').textContent  = guestCount;
-        document.getElementById('statTotal').textContent  = coupleCount + guestCount;
-
-        // Refresh visible tab
-        if (document.getElementById('tab-manage').classList.contains('active')) renderManageGrid(all);
-        if (document.getElementById('tab-guests').classList.contains('active')) renderGuestGrid(all);
-
-        // Store for tab switching
+    /* ── LIVE LISTENERS ── */
+    function startListeners(){
+      /* Photos */
+      FS.photos().orderBy('uploadedAt','desc').onSnapshot(snapshot=>{
+        const all = snapshot.docs.map(doc=>({id:doc.id,...doc.data()}));
+        const cc  = all.filter(p=>p.type==='couple').length;
+        const gc  = all.filter(p=>p.type==='guest').length;
+        document.getElementById('statCouple').textContent = cc;
+        document.getElementById('statGuest').textContent  = gc;
+        document.getElementById('statTotal').textContent  = cc+gc;
         window._allPhotos = all;
-      });
+        renderManageGrid(all);
+        renderGuestGrid(all);
+      }, err=>console.error('Photos listener:',err));
 
-      // RSVPs listener
-      FS.rsvps().orderBy('createdAt', 'desc').onSnapshot(snapshot => {
-        document.getElementById('statRSVP').textContent = snapshot.size;
-        if (document.getElementById('tab-rsvps').classList.contains('active')) renderRSVPs(snapshot.docs);
-        window._rsvpDocs = snapshot.docs;
-      });
+      /* RSVPs — try ordered first, fallback with error handler if index missing */
+      let rsvpUnsub = null;
+      function attachRsvpListener(ordered) {
+        if (rsvpUnsub) rsvpUnsub();
+        const q = ordered
+          ? FS.rsvps().orderBy('createdAt','desc')
+          : FS.rsvps();
+        rsvpUnsub = q.onSnapshot(snapshot=>{
+          // Sort client-side when falling back without orderBy
+          const docs = ordered ? snapshot.docs : snapshot.docs.slice().sort((a,b)=>{
+            const ta = a.data().createdAt?.toMillis?.() || 0;
+            const tb = b.data().createdAt?.toMillis?.() || 0;
+            return tb - ta;
+          });
+          document.getElementById('statRSVP').textContent = snapshot.size;
+          window._rsvpDocs = docs;
+          renderRSVPs(docs);
+        }, err=>{
+          if (ordered) {
+            console.warn('RSVPs orderBy failed (index missing?), falling back to client-side sort:', err);
+            attachRsvpListener(false);
+          } else {
+            console.error('RSVPs listener failed entirely:', err);
+          }
+        });
+      }
+      attachRsvpListener(true);
+
+      /* Wishes — try ordered first, fallback with error handler if index missing */
+      let wishUnsub = null;
+      function attachWishListener(ordered) {
+        if (wishUnsub) wishUnsub();
+        const q = ordered
+          ? FS.wishes().orderBy('createdAt','desc')
+          : FS.wishes();
+        wishUnsub = q.onSnapshot(snapshot=>{
+          const docs = ordered ? snapshot.docs : snapshot.docs.slice().sort((a,b)=>{
+            const ta = a.data().createdAt?.toMillis?.() || 0;
+            const tb = b.data().createdAt?.toMillis?.() || 0;
+            return tb - ta;
+          });
+          document.getElementById('statWishes').textContent = snapshot.size;
+          window._wishDocs = docs;
+          renderWishes(docs);
+        }, err=>{
+          if (ordered) {
+            console.warn('Wishes orderBy failed (index missing?), falling back to client-side sort:', err);
+            attachWishListener(false);
+          } else {
+            console.error('Wishes listener failed entirely:', err);
+          }
+        });
+      }
+      attachWishListener(true);
     }
-
-    /* Tab switching with data refresh */
-    const origSwitch = switchTab;
-    window.switchTab = function(name) {
-      origSwitch(name);
-      if (name === 'manage') renderManageGrid(window._allPhotos || []);
-      if (name === 'guests') renderGuestGrid(window._allPhotos || []);
-      if (name === 'rsvps')  renderRSVPs(window._rsvpDocs || []);
-    };
 
     /* ── MANAGE GRID ── */
-    function renderManageGrid(all) {
-      const photos = (all || []).filter(p => p.type === 'couple');
+    const CAT = { memories:'💕 Memories', prenup:'📸 Pre-Nup', proposal:'💍 Proposal', travels:'✈️ Travels', everyday:'💛 Everyday', wedding:'🌸 Wedding' };
+    function renderManageGrid(all){
+      const photos = (all||[]).filter(p=>p.type==='couple');
       const grid   = document.getElementById('manageGrid');
-      if (!photos.length) {
-        grid.innerHTML = '<div class="empty-state" style="grid-column:1/-1"><i class="fas fa-heart"></i><p>No couple photos uploaded yet</p></div>';
-        return;
-      }
-      const CAT = { memories:'💕 Memories', prenup:'📸 Pre-Nup', proposal:'💍 Proposal', travels:'✈️ Travels', everyday:'💛 Everyday', wedding:'🌸 Wedding' };
-      grid.innerHTML = photos.map(p => `
+      if(!photos.length){ grid.innerHTML='<div class="empty-state" style="grid-column:1/-1"><i class="fas fa-heart"></i><p>No couple photos uploaded yet</p></div>'; return; }
+      grid.innerHTML = photos.map(p=>`
         <div class="manage-card">
           <img src="${escHtml(p.url)}" alt="">
           <div class="manage-card-body">
-            <div class="manage-card-meta">${CAT[p.category] || p.category || 'Memory'}</div>
-            <div class="manage-card-caption">${escHtml(p.caption || 'No caption')}</div>
-            <div class="manage-card-actions">
-              <button class="action-btn delete-btn" onclick="deletePhoto('${p.id}','${escHtml(p.storagePath||'')}')">
-                <i class="fas fa-trash"></i> Remove
-              </button>
+            <div class="manage-card-meta">${CAT[p.category]||p.category||'Memory'}</div>
+            <div class="manage-card-caption">${escHtml(p.caption||'No caption')}</div>
+            <div style="margin-top:10px">
+              <button class="action-btn delete-btn" onclick="deletePhoto('${p.id}','${escHtml(p.publicId||'')}')"><i class="fas fa-trash"></i> Remove</button>
             </div>
           </div>
         </div>`).join('');
     }
 
     /* ── GUEST GRID ── */
-    function renderGuestGrid(all) {
-      const photos = (all || []).filter(p => p.type === 'guest');
+    function renderGuestGrid(all){
+      const photos = (all||[]).filter(p=>p.type==='guest');
       const grid   = document.getElementById('guestGrid');
-      if (!photos.length) {
-        grid.innerHTML = '<div class="empty-state" style="grid-column:1/-1"><i class="fas fa-users"></i><p>No guest photos submitted yet</p></div>';
-        return;
-      }
-      grid.innerHTML = photos.map(p => `
+      if(!photos.length){ grid.innerHTML='<div class="empty-state" style="grid-column:1/-1"><i class="fas fa-users"></i><p>No guest photos submitted yet</p></div>'; return; }
+      grid.innerHTML = photos.map(p=>`
         <div class="guest-submission-card">
           <img class="gsub-img" src="${escHtml(p.url)}" alt="">
           <div class="gsub-body">
-            <div class="gsub-name"><i class="fas fa-user"></i> ${escHtml(p.guestName || 'Guest')}</div>
-            <div class="gsub-caption">${escHtml(p.caption || '')}</div>
-            <div class="gsub-time">${p.uploadedAt?.toDate ? p.uploadedAt.toDate().toLocaleDateString('en-US',{month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'}) : 'Recently'}</div>
-            <div class="gsub-actions">
-              <button class="hide-btn" onclick="deletePhoto('${p.id}','${escHtml(p.storagePath||'')}')">
-                <i class="fas fa-trash"></i> Remove
-              </button>
-            </div>
+            <div class="gsub-name"><i class="fas fa-user"></i> ${escHtml(p.guestName||'Guest')}</div>
+            <div class="gsub-caption">${escHtml(p.caption||'')}</div>
+            <div class="gsub-time">${p.uploadedAt?.toDate?p.uploadedAt.toDate().toLocaleDateString('en-US',{month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'}):'Recently'}</div>
+            <div class="gsub-actions"><button class="hide-btn" onclick="deletePhoto('${p.id}','${escHtml(p.publicId||'')}')"><i class="fas fa-trash"></i> Remove</button></div>
           </div>
         </div>`).join('');
     }
 
-    /* ── DELETE PHOTO ── */
-    async function deletePhoto(docId, storagePath) {
-      if (!confirm('Remove this photo from the gallery?')) return;
-      try {
+    /* ── DELETE ── */
+    async function deletePhoto(docId, publicId){
+      if(!confirm('Remove this photo from the gallery?')) return;
+      try{
         await FS.photos().doc(docId).delete();
-        if (storagePath) {
-          try { await window.storage.ref(storagePath).delete(); } catch (e) { /* may already be deleted */ }
-        }
-        showToast('Photo removed', 'gold');
-      } catch (err) {
-        showToast('Error removing photo');
-        console.error(err);
-      }
+        showToast('Photo removed','gold');
+      } catch(err){ showToast('Error removing photo'); console.error(err); }
     }
 
     /* ── RENDER RSVPs ── */
-    function renderRSVPs(docs) {
+    function renderRSVPs(docs){
       const tbody = document.getElementById('rsvpTableBody');
-      if (!docs.length) {
-        tbody.innerHTML = '<tr><td colspan="7"><div class="empty-state"><i class="fas fa-envelope"></i><p>No RSVPs yet</p></div></td></tr>';
+      if(!docs||!docs.length){
+        tbody.innerHTML='<tr><td colspan="6"><div class="empty-state"><i class="fas fa-envelope-open"></i><p>No RSVPs yet</p></div></td></tr>';
         return;
       }
-      tbody.innerHTML = docs.map(doc => {
-        const r = doc.data();
-        const att = r.attendance || '';
-        const attClass = att.includes('Accepts') ? 'att-accept' : 'att-decline';
+      tbody.innerHTML = docs.map(doc=>{
+        const r   = doc.data();
+        const att = r.attendance||'';
+        const attClass = att.toLowerCase().includes('accept') ? 'att-accept' : 'att-decline';
+        const name = [r.fname,r.lname].filter(Boolean).join(' ') || '—';
+        const date = r.createdAt?.toDate
+          ? r.createdAt.toDate().toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})
+          : '—';
         return `<tr>
-          <td>${escHtml((r.fname || '') + ' ' + (r.lname || ''))}</td>
-          <td>${escHtml(r.email || '—')}</td>
-          <td>${escHtml(r.phone || '—')}</td>
-          <td class="${attClass}">${escHtml(att || '—')}</td>
-          <td>${escHtml(r.guests || '1')}</td>
-          <td>${escHtml(r.meal || '—')}</td>
-          <td style="max-width:200px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${escHtml(r.message || '—')}</td>
+          <td><strong style="color:var(--gold-lt)">${escHtml(name)}</strong><br><span style="font-size:.65rem;color:var(--muted)">${date}</span></td>
+          <td>${escHtml(r.email||'—')}</td>
+          <td>${escHtml(r.phone||'—')}</td>
+          <td class="${attClass}">${escHtml(att||'—')}</td>
+          <td style="text-align:center">${escHtml(String(r.guests||'1'))}</td>
+          <td style="max-width:240px;white-space:pre-wrap;word-break:break-word;font-size:.75rem">${escHtml(r.message||'—')}</td>
         </tr>`;
       }).join('');
+    }
+
+    /* ── RENDER WISHES ── */
+    function renderWishes(docs){
+      const wall = document.getElementById('wishesWall');
+      if(!docs||!docs.length){
+        wall.innerHTML='<div class="empty-state" style="grid-column:1/-1"><i class="fas fa-comment-heart"></i><p>No wishes yet</p></div>';
+        return;
+      }
+      wall.innerHTML = docs.map(doc=>{
+        const w    = doc.data();
+        const time = w.createdAt?.toDate
+          ? w.createdAt.toDate().toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric',hour:'2-digit',minute:'2-digit'})
+          : 'Recently';
+        return `<div class="wish-card">
+          <button class="wish-delete" onclick="deleteWish('${doc.id}')"><i class="fas fa-trash"></i></button>
+          <div class="wish-name">♡ ${escHtml(w.name||'Guest')}</div>
+          <div class="wish-text">${escHtml(w.text||w.message||'')}</div>
+          <div class="wish-time">${time}</div>
+        </div>`;
+      }).join('');
+    }
+
+    /* ── DELETE WISH ── */
+    async function deleteWish(docId){
+      if(!confirm('Delete this wish?')) return;
+      try{ await FS.wishes().doc(docId).delete(); showToast('Wish deleted','gold'); }
+      catch(err){ showToast('Error deleting wish'); console.error(err); }
     }
   </script>
 </body>

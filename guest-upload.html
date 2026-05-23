@@ -7,13 +7,27 @@
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Cinzel+Decorative:wght@400;700&family=Raleway:wght@300;400;500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link rel="stylesheet" href="assets/css/guest-upload.css">
+  <style>
+    /* ── Music pill ── */
+    .music-pill{position:fixed;bottom:24px;right:24px;display:flex;align-items:center;gap:8px;background:rgba(10,31,56,.72);border:1px solid rgba(200,160,64,.35);border-radius:40px;padding:8px 16px 8px 10px;backdrop-filter:blur(10px);z-index:9999;box-shadow:0 4px 20px rgba(0,0,0,.4);}
+    .music-btn{background:none;border:none;color:#c8a040;font-size:1rem;cursor:pointer;width:28px;height:28px;display:flex;align-items:center;justify-content:center;border-radius:50%;transition:color .2s;}
+    .music-btn:hover{color:#e6cc78;}
+    .music-lbl{font-family:'Raleway',sans-serif;font-size:.6rem;letter-spacing:2px;text-transform:uppercase;color:rgba(180,216,238,.6);}
+  </style>
 </head>
 <body>
+
+  <audio id="bgMusic" src="assets/audio/background.mp3" loop preload="auto"></audio>
+
+  <div class="music-pill" id="musicPill">
+    <button class="music-btn" id="musicToggle"><i class="fas fa-music" id="musicIcon"></i></button>
+    <span class="music-lbl">Our Song</span>
+  </div>
 
   <div id="petals"></div>
 
   <nav class="back-nav">
-    <a href="main.html" class="back-link"><i class="fas fa-arrow-left"></i> Back to Wedding Site</a>
+    <a href="index.html" class="back-link"><i class="fas fa-arrow-left"></i> Back to Wedding Site</a>
     <div class="nav-brand">J <span class="nav-amp">&</span> JP</div>
     <div style="width:140px"></div>
   </nav>
@@ -61,13 +75,11 @@
     <div class="upload-inner">
 
       <div id="uploadForm">
-        <!-- Name -->
         <div class="name-field-wrap">
           <label><i class="fas fa-user"></i> &nbsp; Your Name</label>
           <input type="text" id="guestName" class="name-field" placeholder="e.g. Aunt Rosa, The Santos Family, Mike & Clara...">
         </div>
 
-        <!-- Drop zone -->
         <div class="drop-zone" id="dropZone">
           <input type="file" id="photoInput" multiple accept="image/*">
           <div class="drop-icon"><i class="fas fa-cloud-upload-alt"></i></div>
@@ -78,7 +90,6 @@
           </button>
         </div>
 
-        <!-- Preview -->
         <div class="preview-section" id="previewSection" style="display:none">
           <div class="preview-header">
             <span class="preview-count" id="previewCount">0 photos selected</span>
@@ -87,7 +98,6 @@
           <div class="preview-grid" id="previewGrid"></div>
         </div>
 
-        <!-- Upload progress -->
         <div class="upload-progress-wrap" id="uploadProgressWrap">
           <div class="upload-progress-label"><i class="fas fa-spinner fa-spin"></i> Uploading to gallery...</div>
           <div class="upload-progress-bar-outer">
@@ -96,13 +106,11 @@
           <div class="upload-progress-text" id="uploadProgressText">0 of 0 photos</div>
         </div>
 
-        <!-- Caption -->
         <div class="caption-field-wrap">
           <label><i class="fas fa-comment-heart"></i> &nbsp; Caption <span style="font-weight:400;opacity:.6">(optional)</span></label>
           <textarea class="caption-field" id="captionField" placeholder="e.g. 'What a magical day! Caught this candid during the first dance 💕'"></textarea>
         </div>
 
-        <!-- Submit -->
         <button class="submit-btn" id="submitBtn" onclick="submitPhotos()">
           <i class="fas fa-heart"></i> Submit My Photos
         </button>
@@ -114,7 +122,7 @@
         <h2>Thank You!</h2>
         <p id="successMsg">Your photos have been shared! Jonah & John Paul will love seeing the day through your eyes. ♡</p>
         <div class="success-actions">
-          <a href="main.html" class="btn-primary"><i class="fas fa-home"></i> Back to Wedding Site</a>
+          <a href="index.html" class="btn-primary"><i class="fas fa-home"></i> Back to Wedding Site</a>
           <a href="#" class="btn-ghost" onclick="resetForm()"><i class="fas fa-plus"></i> Share More Photos</a>
         </div>
       </div>
@@ -124,13 +132,12 @@
 
   <footer class="page-footer">
     <div class="page-footer-names">Jonah & John Paul</div>
-    <div class="page-footer-copy">June 6, 2026 · Rose Garden, Philippines · #JonahAndJohnPaulForever</div>
+    <div class="page-footer-copy">June 6, 2026 · Cebu City, Philippines · #JonahAndJohnPaulForever</div>
   </footer>
 
-  <!-- Firebase compat SDK -->
+  <!-- Firebase compat SDK (Firestore only — no Storage needed) -->
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-storage-compat.js"></script>
 
   <!-- QR Code library -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
@@ -144,28 +151,28 @@
     /* ── Petals ── */
     spawnPetals('petals', 14);
 
-    /* ── QR Code generation ── */
-    const PAGE_URL = window.location.href.split('?')[0]; // current page URL
+    /* ── QR Code ── */
+    const PAGE_URL = window.location.href.split('?')[0];
     document.getElementById('qrUrl').textContent = PAGE_URL;
-
     const qr = new QRCode(document.getElementById('qrCode'), {
-      text:          PAGE_URL,
-      width:         220,
-      height:        220,
-      colorDark:     '#c2185b',
-      colorLight:    '#fff8fb',
-      correctLevel:  QRCode.CorrectLevel.H
+      text: PAGE_URL, width: 220, height: 220,
+      colorDark: '#c2185b', colorLight: '#fff8fb',
+      correctLevel: QRCode.CorrectLevel.H
     });
-
     function downloadQR() {
       const canvas = document.querySelector('#qrCode canvas');
       if (!canvas) { showToast('QR code not ready yet ♡'); return; }
-      const link   = document.createElement('a');
-      link.download = 'JohnMary-GuestPhoto-QR.png';
-      link.href     = canvas.toDataURL('image/png');
+      const link = document.createElement('a');
+      link.download = 'JonahJohnPaul-GuestPhoto-QR.png';
+      link.href = canvas.toDataURL('image/png');
       link.click();
       showToast('📥 QR code downloaded!');
     }
+
+    /* ── CLOUDINARY CONFIG ── */
+    const CLOUDINARY_CLOUD  = 'daxejisir';
+    const CLOUDINARY_PRESET = 'wedding_uploads';
+    const CLOUDINARY_URL    = `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD}/image/upload`;
 
     /* ── File handling ── */
     let selectedFiles = [];
@@ -179,12 +186,7 @@
       e.preventDefault(); dropZone.classList.remove('drag-over');
       addFiles(Array.from(e.dataTransfer.files).filter(f => f.type.startsWith('image/')));
     });
-
-    function addFiles(files) {
-      files.forEach(f => selectedFiles.push(f));
-      renderPreview();
-    }
-
+    function addFiles(files) { files.forEach(f => selectedFiles.push(f)); renderPreview(); }
     function renderPreview() {
       const section = document.getElementById('previewSection');
       const grid    = document.getElementById('previewGrid');
@@ -204,28 +206,21 @@
         reader.readAsDataURL(f);
       });
     }
-
     function removeFile(i) { selectedFiles.splice(i, 1); renderPreview(); }
+    function clearAll() { selectedFiles = []; document.getElementById('photoInput').value = ''; renderPreview(); }
 
-    function clearAll() {
-      selectedFiles = [];
-      document.getElementById('photoInput').value = '';
-      renderPreview();
-    }
-
-    /* ── Upload to Firebase Storage + Firestore ── */
+    /* ── Upload to Cloudinary + Firestore ── */
     async function submitPhotos() {
       const name    = document.getElementById('guestName').value.trim();
       const caption = document.getElementById('captionField').value.trim();
       const btn     = document.getElementById('submitBtn');
 
-      if (!name)                { showToast('Please enter your name so we know who shared! ♡'); document.getElementById('guestName').focus(); return; }
-      if (!selectedFiles.length){ showToast('Please select at least one photo to share ♡'); return; }
+      if (!name)                 { showToast('Please enter your name so we know who shared! ♡'); document.getElementById('guestName').focus(); return; }
+      if (!selectedFiles.length) { showToast('Please select at least one photo to share ♡'); return; }
 
       btn.disabled = true;
       btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Uploading...';
 
-      // Show progress
       const progressWrap = document.getElementById('uploadProgressWrap');
       const progressBar  = document.getElementById('uploadProgressBar');
       const progressText = document.getElementById('uploadProgressText');
@@ -237,42 +232,28 @@
 
       for (const file of selectedFiles) {
         try {
-          // 1. Upload file to Firebase Storage
-          const fileName  = `${Date.now()}_${file.name.replace(/[^a-zA-Z0-9._-]/g, '_')}`;
-          const storageRef = window.storage.ref(`guest-photos/${fileName}`);
-          const uploadTask = storageRef.put(file);
+          progressText.textContent = `Uploading photo ${done + 1} of ${total}...`;
+          const fd = new FormData();
+          fd.append('file', file);
+          fd.append('upload_preset', CLOUDINARY_PRESET);
+          fd.append('folder', 'guest-photos');
 
-          // Track per-file progress
-          await new Promise((resolve, reject) => {
-            uploadTask.on('state_changed',
-              snap => {
-                const filePct = (snap.bytesTransferred / snap.totalBytes) * 100;
-                const overall = ((done + filePct / 100) / total) * 100;
-                progressBar.style.width = overall.toFixed(1) + '%';
-                progressText.textContent = `Uploading photo ${done + 1} of ${total}...`;
-              },
-              reject,
-              resolve
-            );
-          });
+          const res  = await fetch(CLOUDINARY_URL, { method: 'POST', body: fd });
+          const data = await res.json();
+          if (!res.ok || data.error) throw new Error(data.error?.message || 'Upload failed');
 
-          // 2. Get the download URL
-          const url = await storageRef.getDownloadURL();
-
-          // 3. Save metadata to Firestore
           await FS.photos().add({
-            url,
+            url:        data.secure_url,
             type:       'guest',
             guestName:  name,
-            caption:    caption,
-            storagePath: `guest-photos/${fileName}`,
+            caption,
+            publicId:   data.public_id,
             uploadedAt: firebase.firestore.FieldValue.serverTimestamp()
           });
 
           done++;
           progressBar.style.width = ((done / total) * 100).toFixed(1) + '%';
           progressText.textContent = `${done} of ${total} photos uploaded`;
-
         } catch (err) {
           console.error('Upload error:', err);
           errors.push(file.name);
@@ -283,14 +264,12 @@
       progressWrap.classList.remove('show');
 
       if (done - errors.length > 0) {
-        // Show success
         document.getElementById('uploadForm').style.display = 'none';
         const panel = document.getElementById('successPanel');
         panel.classList.add('show');
         const uploaded = done - errors.length;
         document.getElementById('successMsg').textContent =
           `${uploaded} photo${uploaded > 1 ? 's' : ''} shared by ${name}! Jonah & John Paul will love seeing the day through your eyes. ♡`;
-
         if (typeof confetti !== 'undefined') {
           confetti({ particleCount: 80, spread: 70, origin: { y: 0.6 }, colors: ['#2e6da4','#8fb8d4','#d4af7a','#fce4ec'] });
         }
@@ -299,17 +278,14 @@
         btn.disabled = false;
         btn.innerHTML = '<i class="fas fa-heart"></i> Submit My Photos';
       }
-
-      if (errors.length) {
-        showToast(`${errors.length} file(s) failed to upload`);
-      }
+      if (errors.length) showToast(`${errors.length} file(s) failed to upload`);
     }
 
     function resetForm() {
       selectedFiles = [];
-      document.getElementById('guestName').value  = '';
+      document.getElementById('guestName').value   = '';
       document.getElementById('captionField').value = '';
-      document.getElementById('photoInput').value = '';
+      document.getElementById('photoInput').value   = '';
       renderPreview();
       document.getElementById('uploadForm').style.display = 'block';
       document.getElementById('successPanel').classList.remove('show');
@@ -318,6 +294,48 @@
       btn.innerHTML = '<i class="fas fa-heart"></i> Submit My Photos';
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
+
+    /* ── Music: resume from index.html if it was playing ── */
+    (function(){
+      const audio   = document.getElementById('bgMusic');
+      const btn     = document.getElementById('musicToggle');
+      const ico     = document.getElementById('musicIcon');
+      let playing   = false;
+
+      const wasPlaying = sessionStorage.getItem('musicPlaying') === '1';
+      const savedTime  = parseFloat(sessionStorage.getItem('musicTime')   || '0');
+      const savedVol   = parseFloat(sessionStorage.getItem('musicVolume') || '0.38');
+
+      audio.currentTime = savedTime || 0;
+      audio.volume      = savedVol  || 0.38;
+
+      function startMusic() {
+        audio.play().then(() => { playing = true; ico.className = 'fas fa-pause'; }).catch(()=>{});
+      }
+      function stopMusic() {
+        let v = audio.volume;
+        const fade = setInterval(() => {
+          v = Math.max(parseFloat((v - .04).toFixed(2)), 0);
+          audio.volume = v;
+          if (v <= 0) { clearInterval(fade); audio.pause(); playing = false; ico.className = 'fas fa-music'; }
+        }, 60);
+      }
+
+      if (wasPlaying) startMusic();
+
+      btn.addEventListener('click', () => {
+        if (playing) stopMusic();
+        else { audio.volume = savedVol || 0.38; startMusic(); }
+      });
+
+      document.querySelectorAll('a[href="index.html"]').forEach(a => {
+        a.addEventListener('click', () => {
+          sessionStorage.setItem('musicPlaying', playing ? '1' : '0');
+          sessionStorage.setItem('musicTime',    audio.currentTime);
+          sessionStorage.setItem('musicVolume',  audio.volume);
+        });
+      });
+    })();
   </script>
 </body>
 </html>
