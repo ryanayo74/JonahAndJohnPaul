@@ -45,11 +45,13 @@
       <div class="qr-title">Scan to Open on Your Phone</div>
       <div class="qr-sub">Share this QR code so guests can upload photos directly from their camera</div>
       <div class="qr-box">
-        <div id="qrCode"></div>
-        <div class="qr-url" id="qrUrl"></div>
-        <button class="qr-download-btn" onclick="downloadQR()">
+        <img src="assets/images/qr-guest-upload.png"
+             alt="QR code — scan to share your wedding photos"
+             style="width:220px;height:220px;border-radius:12px;display:block;margin:0 auto">
+        <div class="qr-url" style="margin-top:10px;font-size:.72rem;letter-spacing:1px;opacity:.65">jonah-and-john-paul.vercel.app/guest-upload</div>
+        <a href="assets/images/qr-guest-upload.png" download="JonahJohnPaul-GuestPhoto-QR.png" class="qr-download-btn" style="text-decoration:none;display:inline-flex;align-items:center;gap:8px">
           <i class="fas fa-download"></i> Download QR Code
-        </button>
+        </a>
       </div>
     </div>
   </div>
@@ -81,13 +83,21 @@
         </div>
 
         <div class="drop-zone" id="dropZone">
-          <input type="file" id="photoInput" multiple accept="image/*">
+          <!-- gallery / file picker -->
+          <input type="file" id="photoInput" multiple accept="image/*" style="display:none">
+          <!-- camera — opens rear camera directly on mobile -->
+          <input type="file" id="cameraInput" multiple accept="image/*" capture="environment" style="display:none">
           <div class="drop-icon"><i class="fas fa-cloud-upload-alt"></i></div>
           <h2>Drop Your Photos Here</h2>
           <p>JPG, PNG, HEIC, WebP · Multiple files welcome</p>
-          <button class="browse-btn" onclick="document.getElementById('photoInput').click();event.stopPropagation()">
-            <i class="fas fa-folder-open"></i> Browse Photos
-          </button>
+          <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:4px">
+            <button class="browse-btn" onclick="document.getElementById('cameraInput').click();event.stopPropagation()" style="background:linear-gradient(135deg,#2d78c0,#4a9fd4)">
+              <i class="fas fa-camera"></i> Open Camera
+            </button>
+            <button class="browse-btn" onclick="document.getElementById('photoInput').click();event.stopPropagation()">
+              <i class="fas fa-images"></i> Choose Photos
+            </button>
+          </div>
         </div>
 
         <div class="preview-section" id="previewSection" style="display:none">
@@ -139,8 +149,6 @@
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
 
-  <!-- QR Code library -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
   <!-- Confetti -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/canvas-confetti/1.9.0/confetti.browser.min.js"></script>
 
@@ -151,23 +159,7 @@
     /* ── Petals ── */
     spawnPetals('petals', 14);
 
-    /* ── QR Code ── */
-    const PAGE_URL = window.location.href.split('?')[0];
-    document.getElementById('qrUrl').textContent = PAGE_URL;
-    const qr = new QRCode(document.getElementById('qrCode'), {
-      text: PAGE_URL, width: 220, height: 220,
-      colorDark: '#c2185b', colorLight: '#fff8fb',
-      correctLevel: QRCode.CorrectLevel.H
-    });
-    function downloadQR() {
-      const canvas = document.querySelector('#qrCode canvas');
-      if (!canvas) { showToast('QR code not ready yet ♡'); return; }
-      const link = document.createElement('a');
-      link.download = 'JonahJohnPaul-GuestPhoto-QR.png';
-      link.href = canvas.toDataURL('image/png');
-      link.click();
-      showToast('📥 QR code downloaded!');
-    }
+    /* ── QR Code — static image: assets/images/qr-guest-upload.png ── */
 
     /* ── CLOUDINARY CONFIG ── */
     const CLOUDINARY_CLOUD  = 'daxejisir';
@@ -179,7 +171,8 @@
     const dropZone   = document.getElementById('dropZone');
     const photoInput = document.getElementById('photoInput');
 
-    photoInput.addEventListener('change', e => addFiles(Array.from(e.target.files)));
+    photoInput.addEventListener('change',  e => addFiles(Array.from(e.target.files)));
+    document.getElementById('cameraInput').addEventListener('change', e => addFiles(Array.from(e.target.files)));
     dropZone.addEventListener('dragover',  e => { e.preventDefault(); dropZone.classList.add('drag-over'); });
     dropZone.addEventListener('dragleave', ()  => dropZone.classList.remove('drag-over'));
     dropZone.addEventListener('drop', e => {
@@ -207,7 +200,7 @@
       });
     }
     function removeFile(i) { selectedFiles.splice(i, 1); renderPreview(); }
-    function clearAll() { selectedFiles = []; document.getElementById('photoInput').value = ''; renderPreview(); }
+    function clearAll() { selectedFiles = []; document.getElementById('photoInput').value = ''; document.getElementById('cameraInput').value = ''; renderPreview(); }
 
     /* ── Upload to Cloudinary + Firestore ── */
     async function submitPhotos() {

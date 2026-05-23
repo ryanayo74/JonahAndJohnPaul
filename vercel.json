@@ -3,7 +3,8 @@
   "trailingSlash": false,
   "rewrites": [
     { "source": "/admin",        "destination": "/admin.html" },
-    { "source": "/guest-upload", "destination": "/guest-upload.html" }
+    { "source": "/guest-upload", "destination": "/guest-upload.html" },
+    { "source": "/guest-camera", "destination": "/guest-camera.html" }
   ],
   "headers": [
     {
