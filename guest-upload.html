@@ -83,9 +83,7 @@
         </div>
 
         <div class="drop-zone" id="dropZone">
-          <!-- gallery / file picker -->
           <input type="file" id="photoInput" multiple accept="image/*" style="display:none">
-          <!-- camera — opens rear camera directly on mobile -->
           <input type="file" id="cameraInput" multiple accept="image/*" capture="environment" style="display:none">
           <div class="drop-icon"><i class="fas fa-cloud-upload-alt"></i></div>
           <h2>Drop Your Photos Here</h2>
@@ -152,8 +150,56 @@
   <!-- Confetti -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/canvas-confetti/1.9.0/confetti.browser.min.js"></script>
 
-  <!-- Shared utilities -->
-  <script src="assets/js/shared.js"></script>
+  <!-- Self-contained init — NO shared.js needed, NO firebase.storage() -->
+  <script>
+    (function(){
+      var cfg = {
+        apiKey:            "AIzaSyCwVfo4WCKON-kyBj310ANA9HxHOrRF3f8",
+        authDomain:        "weeding-database.firebaseapp.com",
+        projectId:         "weeding-database",
+        storageBucket:     "weeding-database.firebasestorage.app",
+        messagingSenderId: "27469893127",
+        appId:             "1:27469893127:web:7bd5ad9a556fc5f30d24a2"
+      };
+      if (!firebase.apps.length) firebase.initializeApp(cfg);
+      window.db = firebase.firestore();
+      window.FS = {
+        photos: function(){ return window.db.collection('photos'); },
+        wishes: function(){ return window.db.collection('wishes'); },
+        rsvps:  function(){ return window.db.collection('rsvps');  }
+      };
+      window.showToast = function(msg, type) {
+        var t = document.getElementById('globalToast');
+        if (!t) {
+          t = document.createElement('div');
+          t.id = 'globalToast';
+          t.style.cssText = 'position:fixed;bottom:28px;left:50%;transform:translate(-50%,120px);padding:14px 24px;border-radius:14px;font-family:Raleway,sans-serif;font-size:.85rem;font-weight:600;display:flex;align-items:center;gap:10px;opacity:0;pointer-events:none;transition:all .4s cubic-bezier(.175,.885,.32,1.275);z-index:99999;box-shadow:0 10px 40px rgba(0,0,0,.3);white-space:nowrap';
+          document.body.appendChild(t);
+        }
+        t.style.background = type === 'gold' ? 'linear-gradient(135deg,#c8a040,#f8edc8)' : 'linear-gradient(135deg,#122944,#2d78c0)';
+        t.style.color = '#fff';
+        t.innerHTML = '<i class="fas fa-heart"></i><span>' + msg + '</span>';
+        t.style.transform = 'translate(-50%,0)';
+        t.style.opacity = '1';
+        clearTimeout(window._tt);
+        window._tt = setTimeout(function(){ t.style.transform='translate(-50%,120px)'; t.style.opacity='0'; }, 3800);
+      };
+      window.spawnPetals = function(id, count) {
+        var c = document.getElementById(id);
+        if (!c) return;
+        var cols = ['#7ec0e0','#4a9fd4','#b4d8ee','#2d78c0','#d8eef8'];
+        for (var i = 0; i < (count||18); i++) {
+          var p = document.createElement('div');
+          var sz = 10 + Math.random() * 18;
+          p.style.cssText = 'position:absolute;top:-60px;left:'+Math.random()*100+'%;width:'+sz+'px;height:'+sz+'px;border-radius:'+(Math.random()>.5?'0% 100% 0% 100%':'100% 0% 100% 0%')+';background:radial-gradient(ellipse,'+cols[Math.floor(Math.random()*cols.length)]+' 0%,transparent 100%);opacity:'+(0.2+Math.random()*.45)+';animation:fall '+(7+Math.random()*10)+'s linear '+(Math.random()*12)+'s infinite;pointer-events:none';
+          c.appendChild(p);
+        }
+      };
+      window.escHtml = function(s) {
+        return String(s).replace(/[&<>"']/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]; });
+      };
+    })();
+  </script>
 
   <script>
     /* ── Petals ── */
@@ -172,14 +218,21 @@
     const photoInput = document.getElementById('photoInput');
 
     photoInput.addEventListener('change',  e => addFiles(Array.from(e.target.files)));
-    document.getElementById('cameraInput').addEventListener('change', e => addFiles(Array.from(e.target.files)));
+    document.getElementById('cameraInput') && document.getElementById('cameraInput').addEventListener('change', e => addFiles(Array.from(e.target.files)));
     dropZone.addEventListener('dragover',  e => { e.preventDefault(); dropZone.classList.add('drag-over'); });
     dropZone.addEventListener('dragleave', ()  => dropZone.classList.remove('drag-over'));
     dropZone.addEventListener('drop', e => {
       e.preventDefault(); dropZone.classList.remove('drag-over');
       addFiles(Array.from(e.dataTransfer.files).filter(f => f.type.startsWith('image/')));
     });
-    function addFiles(files) { files.forEach(f => selectedFiles.push(f)); renderPreview(); }
+    function addFiles(files) {
+      files.forEach(f => {
+        /* attach a stable object URL so previews render in order */
+        f._previewUrl = URL.createObjectURL(f);
+        selectedFiles.push(f);
+      });
+      renderPreview();
+    }
     function renderPreview() {
       const section = document.getElementById('previewSection');
       const grid    = document.getElementById('previewGrid');
@@ -187,20 +240,26 @@
       if (!selectedFiles.length) { section.style.display = 'none'; return; }
       section.style.display = 'block';
       count.textContent = `${selectedFiles.length} photo${selectedFiles.length > 1 ? 's' : ''} selected`;
-      grid.innerHTML = '';
-      selectedFiles.forEach((f, i) => {
-        const reader = new FileReader();
-        reader.onload = ev => {
-          const thumb = document.createElement('div');
-          thumb.className = 'preview-thumb';
-          thumb.innerHTML = `<img src="${ev.target.result}" alt="Preview"><button class="remove-thumb" onclick="removeFile(${i})"><i class="fas fa-times"></i></button>`;
-          grid.appendChild(thumb);
-        };
-        reader.readAsDataURL(f);
-      });
+      /* build all thumbs synchronously using object URLs — no async ordering issues */
+      grid.innerHTML = selectedFiles.map((f, i) => `
+        <div class="preview-thumb">
+          <img src="${f._previewUrl}" alt="Preview">
+          <button class="remove-thumb" onclick="removeFile(${i})"><i class="fas fa-times"></i></button>
+        </div>`).join('');
     }
-    function removeFile(i) { selectedFiles.splice(i, 1); renderPreview(); }
-    function clearAll() { selectedFiles = []; document.getElementById('photoInput').value = ''; document.getElementById('cameraInput').value = ''; renderPreview(); }
+    function removeFile(i) {
+      /* revoke the object URL to free memory */
+      if (selectedFiles[i]._previewUrl) URL.revokeObjectURL(selectedFiles[i]._previewUrl);
+      selectedFiles.splice(i, 1);
+      renderPreview();
+    }
+    function clearAll() {
+      selectedFiles.forEach(f => { if (f._previewUrl) URL.revokeObjectURL(f._previewUrl); });
+      selectedFiles = [];
+      document.getElementById('photoInput').value = '';
+      document.getElementById('cameraInput') && (document.getElementById('cameraInput').value = '');
+      renderPreview();
+    }
 
     /* ── Upload to Cloudinary + Firestore ── */
     async function submitPhotos() {
